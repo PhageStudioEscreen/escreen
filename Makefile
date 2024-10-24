@@ -1,7 +1,6 @@
 #
 # Makefile
 #
-CC 				?= gcc
 LVGL_DIR_NAME 	?= lvgl
 LVGL_DIR 		?= .
 
@@ -10,9 +9,9 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security \
 					-Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body \
 					-Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -std=gnu99
-CFLAGS 			?= -O3 -g0 -I$(LVGL_DIR)/ $(WARNINGS)
-LDFLAGS 		?= -lm
-BIN 			= main
+CFLAGS			?= -O3 -g0 -I$(LVGL_DIR)/ -I$(LVGL_DIR)/include -I$(LVGL_DIR)/include/libdrm -I$(LVGL_DIR)/include/libkms $(WARNINGS)
+LDFLAGS			?= -lm -L$(LVGL_DIR)/lib -ldrm
+BIN				= pgs_escreen
 BUILD_DIR 		= ./build
 BUILD_OBJ_DIR 	= $(BUILD_DIR)/obj
 BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
@@ -41,7 +40,7 @@ TARGET 			= $(addprefix $(BUILD_OBJ_DIR)/, $(patsubst ./%, %, $(OBJS)))
 ## MAINOBJ -> OBJFILES
 
 
-all: default
+all: pgs_escreen
 
 $(BUILD_OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -53,17 +52,19 @@ $(BUILD_OBJ_DIR)/%.o: %.S
 	@$(CC)  $(CFLAGS) -c $< -o $@
 	@echo "CC $<"
 
-
-default: $(TARGET)
+pgs_escreen: $(TARGET)
 	@mkdir -p $(dir $(BUILD_BIN_DIR)/)
 	$(CC) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(LDFLAGS)
 
+.PHONY: clean
 clean: 
 	rm -rf $(BUILD_DIR)
 
+.PHONY: install
 install:
-	install -d $(DESTDIR)$(bindir)
-	install $(BUILD_BIN_DIR)/$(BIN) $(DESTDIR)$(bindir)
+	install -d $(TARGET_DIR)$(bindir)
+	install $(BUILD_BIN_DIR)/$(BIN) $(TARGET_DIR)$(bindir)
 
+.PHONY: uninstall
 uninstall:
-	$(RM) -r $(addprefix $(DESTDIR)$(bindir)/,$(BIN))
+	$(RM) -r $(addprefix $(TARGET_DIR)$(bindir)/,$(BIN))
