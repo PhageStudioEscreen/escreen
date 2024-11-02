@@ -10,8 +10,8 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security \
 					-Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body \
 					-Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -std=gnu99
-CFLAGS			?= -O3 -g0 -I$(LVGL_DIR)/ -I$(MEDIA_OUT_DIR)/include -I$(MEDIA_OUT_DIR)/include/libdrm -I$(MEDIA_OUT_DIR)/include/libkms $(WARNINGS)
-LDFLAGS			?= -lm -L$(MEDIA_OUT_DIR)/lib -ldrm
+CFLAGS			?= -O3 -g0 -I$(LVGL_DIR)/ -I$(STAGING_DIR)/usr/include/libdrm -I$(STAGING_DIR)/usr/include/libkms -I$(STAGING_DIR)/usr/include $(WARNINGS)
+LDFLAGS			?= -lm -lz -L$(STAGING_DIR)/usr/lib -ldrm -linput -lxkbcommon -lavformat -lavcodec -lavutil -lswscale -lpthread
 BIN				= pgs_escreen
 BUILD_DIR 		= ./build
 BUILD_OBJ_DIR 	= $(BUILD_DIR)/obj
@@ -19,6 +19,7 @@ BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
 
 prefix 			?= /usr
 bindir 			?= $(prefix)/bin
+sharedir        ?= $(prefix)/share/X11
 
 #Collect the files to compile
 MAINSRC          = ./main.c
@@ -63,7 +64,9 @@ clean:
 .PHONY: install
 install:
 	install -d $(TARGET_DIR)$(bindir)
+	install -d $(TARGET_DIR)$(sharedir)
 	install $(BUILD_BIN_DIR)/$(BIN) $(TARGET_DIR)$(bindir)
+	cp -r $(LVGL_DIR)/xkb $(TARGET_DIR)$(sharedir)
 
 .PHONY: uninstall
 uninstall:

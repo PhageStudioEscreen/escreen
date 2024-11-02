@@ -698,13 +698,13 @@
 /*File system interfaces for common APIs */
 
 /*Setting a default driver letter allows skipping the driver prefix in filepaths*/
-#define LV_FS_DEFAULT_DRIVE_LETTER '\0'
+#define LV_FS_DEFAULT_DRIVE_LETTER 'S'
 
 /*API for fopen, fread, etc*/
 #define LV_USE_FS_STDIO 1
 #if LV_USE_FS_STDIO
-    #define LV_FS_STDIO_LETTER 'A'
-    #define LV_FS_STDIO_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
+    #define LV_FS_STDIO_LETTER 'S'
+    #define LV_FS_STDIO_PATH "/mnt/sdcard/pgs/"         /*Set the working directory. File/directory paths will be appended to it.*/
     #define LV_FS_STDIO_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
 #endif
 
@@ -832,7 +832,7 @@
 
 /*FFmpeg library for image decoding and playing videos
  *Supports all major image formats so do not enable other image decoder with it*/
-#define LV_USE_FFMPEG 0
+#define LV_USE_FFMPEG 1
 #if LV_USE_FFMPEG
     /*Dump input information to stderr*/
     #define LV_FFMPEG_DUMP_FORMAT 0
@@ -932,7 +932,7 @@
 
 /*1: Enable file explorer*/
 /*Requires: lv_table*/
-#define LV_USE_FILE_EXPLORER                     0
+#define LV_USE_FILE_EXPLORER                     1
 #if LV_USE_FILE_EXPLORER
     /*Maximum length of path*/
     #define LV_FILE_EXPLORER_PATH_MAX_LEN        (128)
@@ -1015,16 +1015,16 @@
 #define LV_USE_EVDEV    0
 
 /*Driver for libinput input devices*/
-#define LV_USE_LIBINPUT    0
+#define LV_USE_LIBINPUT    1
 
 #if LV_USE_LIBINPUT
     #define LV_LIBINPUT_BSD    0
 
     /*Full keyboard support*/
-    #define LV_LIBINPUT_XKB             0
+    #define LV_LIBINPUT_XKB             1
     #if LV_LIBINPUT_XKB
         /*"setxkbmap -query" can help find the right values for your keyboard*/
-        #define LV_LIBINPUT_XKB_KEY_MAP { .rules = NULL, .model = "pc101", .layout = "us", .variant = NULL, .options = NULL }
+        #define LV_LIBINPUT_XKB_KEY_MAP { .rules = NULL, .model = "pc105", .layout = "us", .variant = NULL, .options = NULL }
     #endif
 #endif
 
