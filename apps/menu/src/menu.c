@@ -151,8 +151,14 @@ static void apps_register(const char * path)
 
     LV_IMG_DECLARE(icon_app);
 
-    app->icon = lv_image_create(app->button);
-    lv_image_set_src(app->icon, &icon_app);
+    app->icon                       = lv_image_create(app->button);
+    const lv_image_dsc_t * icon_dyn = pgs_libpng_decode(icon_path);
+    if(icon_dyn) {
+        lv_image_set_src(app->icon, icon_dyn);
+    } else {
+        lv_image_set_src(app->icon, &icon_app);
+    }
+
     lv_obj_align(app->icon, LV_ALIGN_CENTER, 0, 0);
 
     lv_group_add_obj(ui_group, app->button);

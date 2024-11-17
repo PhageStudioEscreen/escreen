@@ -62,6 +62,7 @@ install:
 	 	filename=$$(basename $$file | sed 's/^pgs_//'); \
 	 	if [ "$$filename" != "menu" ]; then \
 	 		install -d $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename; \
+			cp $(LVGL_DIR)/apps/$$filename/icon.png $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/icon.png; \
 	 	fi; \
 	 	install $$file $(TARGET_DIR)$(bindir)/; \
 	done

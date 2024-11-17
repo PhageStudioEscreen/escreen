@@ -4,5 +4,6 @@
 #include "backlist/pgs_backlist.h"
 #include "dbus_dispatch/pgs_dbus_dispatch.h"
 #include "dbus_handler/pgs_dbus_handler.h"
+#include "libpng/pgs_libpng.h"
 
 #endif
