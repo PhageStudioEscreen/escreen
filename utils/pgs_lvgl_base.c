@@ -92,7 +92,7 @@ static void redirection_ttyFIQ0(void)
     setvbuf(stdout, NULL, _IOLBF, 0);
 }
 
-static void cleanup()
+void pgs_cleanup(void)
 {
     /* wake up menu, then kill */
     pgs_dbus_method_call("com.pgsapp.menu", "/com/pgsapp/menu", 1, getpid());
@@ -107,13 +107,13 @@ static void cleanup()
 
 static void signal_handler(int signum)
 {
-    cleanup();
+    pgs_cleanup();
 }
 
 static void redirection_signal(void)
 {
-    if(atexit(cleanup) != 0) {
-        cleanup();
+    if(atexit(pgs_cleanup) != 0) {
+        pgs_cleanup();
     }
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);

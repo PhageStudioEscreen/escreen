@@ -23,7 +23,6 @@ CFLAGS			?= -O3 -g0 -I$(LVGL_DIR)/ \
 LDFLAGS			?= -lm -lz -L$(STAGING_DIR)/usr/lib -ldrm -linput -lxkbcommon -lavformat -lavcodec -lavutil -lswscale -lpthread -ldbus-1 -lpng -ljpeg
 
 include $(LVGL_DIR)/lvgl/lvgl.mk
-include $(LVGL_DIR)/menu/menu.mk
 include $(LVGL_DIR)/modules/modules.mk
 include $(LVGL_DIR)/utils/utils.mk
 
@@ -32,55 +31,20 @@ OBJEXT 			?= .o
 AOBJS 			= $(ASRCS:.S=$(OBJEXT))
 COBJS 			= $(CSRCS:.c=$(OBJEXT))
 
-BIN				= pgs_menu
-BUILD_DIR 		= ./build
-BUILD_OBJ_DIR 	= $(BUILD_DIR)/obj
+CURRENT 		= $(CURDIR)
+BUILD_DIR 		= $(CURDIR)/build
 BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
-MAINSRC          = ./main.c
-MAINOBJ 		= $(MAINSRC:.c=$(OBJEXT))
-SRCS 			= $(ASRCS) $(CSRCS) $(MAINSRC)
-OBJS 			= $(AOBJS) $(COBJS) $(MAINOBJ)
-TARGET 			= $(addprefix $(BUILD_OBJ_DIR)/, $(patsubst ./%, %, $(OBJS)))
 
-BIN_APP_DEMO 			= pgs_demo
-BUILD_DIR_APP_DEMO		= ./build_demo
-BUILD_OBJ_DIR_APP_DEMO 	= $(BUILD_DIR_APP_DEMO)/obj
-BUILD_BIN_DIR_APP_DEMO 	= $(BUILD_DIR_APP_DEMO)/bin
-MAINSRC_APP_DEMO     	= ./apps/demo/main.c
-MAINOBJ_APP_DEMO 		= $(MAINSRC_APP_DEMO:.c=$(OBJEXT))
-SRCS_APP_DEMO  			= $(ASRCS) $(CSRCS) $(MAINSRC_APP_DEMO)
-OBJS_APP_DEMO  			= $(AOBJS) $(COBJS) $(MAINOBJ_APP_DEMO)
-TARGET_APP_DEMO 		= $(addprefix $(BUILD_OBJ_DIR_APP_DEMO)/, $(patsubst ./%, %, $(OBJS_APP_DEMO)))
+SUBDIRS = apps/menu apps/helloworld
 
-all: pgs_menu pgs_demo
+export CC CFLAGS LDFLAGS OBJEXT ASRCS CSRCS AOBJS COBJS BUILD_DIR BUILD_BIN_DIR CURRENT
 
-$(BUILD_OBJ_DIR)/%.o: %.c
-	@mkdir -p $(dir $@)
-	@$(CC)  $(CFLAGS) -c $< -o $@
-	@echo "CC $<"
+.PHONY: all clean $(SUBDIRS)
 
-$(BUILD_OBJ_DIR)/%.o: %.S
-	@mkdir -p $(dir $@)
-	@$(CC)  $(CFLAGS) -c $< -o $@
-	@echo "CC $<"
+all: $(SUBDIRS)
 
-pgs_menu: $(TARGET)
-	@mkdir -p $(dir $(BUILD_BIN_DIR)/)
-	$(CC) -o $(BUILD_BIN_DIR)/$(BIN) $(TARGET) $(LDFLAGS)
-
-$(BUILD_OBJ_DIR_APP_DEMO)/%.o: %.c
-	@mkdir -p $(dir $@)
-	@$(CC)  $(CFLAGS) -c $< -o $@
-	@echo "CC $<"
-
-$(BUILD_OBJ_DIR_APP_DEMO)/%.o: %.S
-	@mkdir -p $(dir $@)
-	@$(CC)  $(CFLAGS) -c $< -o $@
-	@echo "CC $<"
-
-pgs_demo: $(TARGET_APP_DEMO)
-	@mkdir -p $(dir $(BUILD_BIN_DIR_APP_DEMO)/)
-	$(CC) -o $(BUILD_BIN_DIR_APP_DEMO)/$(BIN_APP_DEMO) $(TARGET_APP_DEMO) $(LDFLAGS)
+$(SUBDIRS):
+	+make -C $@
 
 .PHONY: clean
 clean: 
@@ -88,16 +52,21 @@ clean:
 
 .PHONY: install
 install:
-	install -d $(TARGET_DIR)$(bindir)
-	install -d $(TARGET_DIR)$(sharedir)/X11
-	install -d $(TARGET_DIR)$(sharedir)/pgs
-	install -d $(TARGET_DIR)$(sharedir)/pgs/menu
-	install -d $(TARGET_DIR)$(sharedir)/pgs/apps
-	install -d $(TARGET_DIR)$(sharedir)/dbus-1/services
-	install $(BUILD_BIN_DIR)/$(BIN) $(TARGET_DIR)$(bindir)
-	install $(BUILD_BIN_DIR_APP_DEMO)/$(BIN_APP_DEMO) $(TARGET_DIR)$(bindir)
-	cp -r $(LVGL_DIR)/xkb $(TARGET_DIR)$(sharedir)/X11
-	cp -r $(LVGL_DIR)/services/* $(TARGET_DIR)$(sharedir)/dbus-1/services
+	@install -d $(TARGET_DIR)$(bindir)
+	@install -d $(TARGET_DIR)$(sharedir)/X11
+	@install -d $(TARGET_DIR)$(sharedir)/pgs
+	@install -d $(TARGET_DIR)$(sharedir)/pgs/menu
+	@install -d $(TARGET_DIR)$(sharedir)/pgs/apps
+	@install -d $(TARGET_DIR)$(sharedir)/dbus-1/services
+	@for file in $(BUILD_BIN_DIR)/*; do \
+	 	filename=$$(basename $$file | sed 's/^pgs_//'); \
+	 	if [ "$$filename" != "menu" ]; then \
+	 		install -d $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename; \
+	 	fi; \
+	 	install $$file $(TARGET_DIR)$(bindir)/; \
+	done
+	@cp -r $(LVGL_DIR)/xkb $(TARGET_DIR)$(sharedir)/X11
+	@cp -r $(LVGL_DIR)/services/* $(TARGET_DIR)$(sharedir)/dbus-1/services
 
 .PHONY: uninstall
 uninstall:
