@@ -1,0 +1,168 @@
+{
+    "base": "/usr/share/pgs/themes/default",
+    "states": [
+        {
+            "name": "macro",
+            "enable": true,
+            "prop": {
+                "x": 8,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "macro1",
+            "enable": true,
+            "prop": {
+                "x": 29,
+                "y": 8,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "macro2",
+            "enable": true,
+            "prop": {
+                "x": 29,
+                "y": 25,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "layer",
+            "enable": true,
+            "prop": {
+                "x": 39,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "capslock",
+            "enable": true,
+            "prop": {
+                "x": 70,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "numlock",
+            "enable": true,
+            "prop": {
+                "x": 101,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "ble1",
+            "enable": true,
+            "prop": {
+                "x": 132,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "ble2",
+            "enable": true,
+            "prop": {
+                "x": 163,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "ble3",
+            "enable": true,
+            "prop": {
+                "x": 194,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "2g4",
+            "enable": true,
+            "prop": {
+                "x": 225,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "usb",
+            "enable": true,
+            "prop": {
+                "x": 256,
+                "y": 7,
+                "anim": "none"
+            }
+        },
+        {
+            "name": "bat",
+            "enable": true,
+            "prop": {
+                "x": 287,
+                "y": 7,
+                "anim": "none"
+            }
+        }
+    ],
+    "keyroll": {
+        "enable": true,
+        "prop": {
+            "x": 5,
+            "y": 40,
+            "n": 2
+        }
+    },
+    "apmchart": {
+        "enable": true,
+        "prop": {
+            "x": 207,
+            "y": 40,
+            "w": 108,
+            "h": 96,
+            "color": "FF6086"
+        }
+    },
+    "apmlabel": {
+        "enable": true,
+        "prop": {
+            "x": 208,
+            "y": 144,
+            "w": 108,
+            "h": 24,
+            "size": 18,
+            "align": "center",
+            "color": "FF6086"
+        }
+    },
+    "labels": [
+        {
+            "enable": true,
+            "text": "ARK COLORS 75%",
+            "prop": {
+                "x": 3,
+                "y": 144,
+                "w": 201,
+                "h": 24,
+                "size": 18,
+                "align": "center",
+                "color": "60C5FF"
+            }
+        }
+    ],
+    "images": [
+        {
+            "enable": true,
+            "path": "./images/barname.png",
+            "prop": {
+                "x": 45,
+                "y": 167
+            }
+        }
+    ]
+}

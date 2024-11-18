@@ -94,14 +94,14 @@ static void redirection_ttyFIQ0(void)
 
 void pgs_cleanup(void)
 {
+    pgs_lvgl_suspend();
+
     /* wake up menu, then kill */
     pgs_dbus_method_call("com.pgsapp.menu", "/com/pgsapp/menu", 1, getpid());
 
-    pgs_lvgl_suspend();
-
     while(1) {
         /* wait for kill */
-        sleep(1000);
+        sleep(1);
     }
 }
 
@@ -144,6 +144,7 @@ void pgs_lvgl_init(const char * name)
     /* if not menu, make menu suspend */
     if(strncmp(name, PGS_DBUS_MENU, sizeof(PGS_DBUS_MENU - 1))) {
         pgs_dbus_method_call(PGS_DBUS_MENU_NAME, PGS_DBUS_MENU_PATH, 0, 0);
+        pgs_wait_become_foreground();
     }
 
     lv_linux_disp_init();

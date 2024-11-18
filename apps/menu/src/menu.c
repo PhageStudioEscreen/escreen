@@ -89,7 +89,13 @@ static void apps_event_cb(lv_event_t * event)
         lv_snprintf(dbus_name, sizeof(dbus_name), PGS_DBUS_NAME_PREFIX "%s", app->name);
         lv_snprintf(dbus_path, sizeof(dbus_path), PGS_DBUS_PATH_PREFIX "%s", app->name);
 
-        pgs_dbus_method_call(dbus_name, dbus_path, 1, 0);
+        pgs_lvgl_suspend();
+        /* wake up app, then kill */
+        pgs_dbus_method_call(dbus_name, dbus_path, 1, getpid());
+        while(1) {
+            /* wait for kill */
+            sleep(1);
+        }
     } else if(code == LV_EVENT_KEY) {
         lv_group_t * g   = lv_indev_get_group(lv_indev_active());
         uint32_t keycode = lv_indev_get_key(lv_indev_active());

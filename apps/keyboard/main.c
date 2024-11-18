@@ -4,6 +4,7 @@
 
 #include "pgs_modules.h"
 #include "pgs_utils.h"
+#include "pgs_kbd_params.h"
 
 static lv_group_t * gmain;
 static lv_group_t * gback;
@@ -62,7 +63,16 @@ static void apps_event_cb(lv_event_t * event)
 
 int main(void)
 {
-    pgs_lvgl_init("helloworld");
+    pgs_lvgl_init("keyboard");
+
+    struct pgs_kbd_params * params = pgs_kbd_params_parse("/usr/share/pgs/apps/keyboard/themes/default/config.json");
+    if(params) {
+        printf("Parse base %s\n", params->base);
+        printf("States count %d\n", params->states_count);
+        for(uint8_t i = 0; i < params->states_count; i++) {
+            printf("State type %d\n", params->states[i].type);
+        }
+    }
 
     gmain = lv_group_create();
     gback = lv_group_create();
@@ -80,7 +90,7 @@ int main(void)
     lv_obj_clear_flag(ui_container, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t * label = lv_label_create(ui_container);
-    lv_label_set_text(label, "HELLO WORLD");
+    lv_label_set_text(label, "KEYBOARD");
     lv_obj_set_style_text_font(label, &lv_font_helveticarounded_24, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);

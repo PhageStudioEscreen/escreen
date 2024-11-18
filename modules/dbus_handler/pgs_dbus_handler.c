@@ -37,17 +37,22 @@ static void respond_to_states(DBusConnection * connection, DBusMessage * request
 
     pgs_dispatch_dbus_message(states);
 
-    if(!strcmp(dbus_name, PGS_DBUS_MENU_NAME)) {
-        if(states == 0) {
-            pgs_lvgl_suspend();
-            exit(0);
-        }
-
-        if(pid != 0) {
-            printf("Kill %d by %s\n", pid, dbus_name);
-            kill(pid, SIGKILL);
-        }
+    if(pid != 0) {
+        printf("Kill %d by %s\n", pid, dbus_name);
+        kill(pid, SIGKILL);
     }
+
+    // if(!strcmp(dbus_name, PGS_DBUS_MENU_NAME)) {
+    //     if(states == 0) {
+    //         pgs_lvgl_suspend();
+    //         exit(0);
+    //     }
+
+    //     if(pid != 0) {
+    //         printf("Kill %d by %s\n", pid, dbus_name);
+    //         kill(pid, SIGKILL);
+    //     }
+    // }
 }
 
 static void check_and_abort(DBusError * error)
@@ -148,8 +153,20 @@ static DBusHandlerResult messages_handler(DBusConnection * connection, DBusMessa
     }
 }
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond   = PTHREAD_COND_INITIALIZER;
+int flag              = 0;
+
 static void * dbus_dispatch_thread_func(void * param)
 {
+    if(strcmp(dbus_name, PGS_DBUS_MENU_NAME)) {
+        pgs_dispatch_dbus_message(0);
+        pthread_mutex_lock(&mutex);
+        flag = 1;
+        pthread_cond_signal(&cond);
+        pthread_mutex_unlock(&mutex);
+    }
+
     while(1) {
         dbus_connection_read_write_dispatch((DBusConnection *)param, 1000); /* 0 to wait forever */
     }
@@ -181,4 +198,14 @@ void pgs_dbus_handler_init(const char * name, const char * path)
     check_and_abort(&error);
 
     pthread_create(&tid, NULL, dbus_dispatch_thread_func, connection);
+
+    if(strcmp(dbus_name, PGS_DBUS_MENU_NAME)) {
+        pthread_mutex_lock(&mutex);
+        while(flag == 0) {
+            pthread_cond_wait(&cond, &mutex);
+        }
+        pthread_mutex_unlock(&mutex);
+        pthread_mutex_destroy(&mutex);
+        pthread_cond_destroy(&cond);
+    }
 }
