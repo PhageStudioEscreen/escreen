@@ -5,6 +5,37 @@
 #include <stdbool.h>
 #include "lvgl/lvgl.h"
 
+enum pgs_kbd_state_macro_state {
+    PGS_KBD_STATE_MACRO_STATE_UNKNOWN = 0,
+
+    PGS_KBD_STATE_MACRO_STATE_PAUSE,
+    PGS_KBD_STATE_MACRO_STATE_PLAY1,
+    PGS_KBD_STATE_MACRO_STATE_PLAY2,
+    PGS_KBD_STATE_MACRO_STATE_RECORD1,
+    PGS_KBD_STATE_MACRO_STATE_RECORD2,
+
+    PGS_KBD_STATE_MACRO_STATE_MAX
+};
+
+enum pgs_kbd_state_output_state {
+    PGS_KBD_STATE_OUTPUT_STATE_UNKNOWN = 0,
+
+    PGS_KBD_STATE_OUTPUT_STATE_DISCONNECT,
+    PGS_KBD_STATE_OUTPUT_STATE_CONNECT,
+    PGS_KBD_STATE_OUTPUT_STATE_SEARCHING,
+
+    PGS_KBD_STATE_OUTPUT_STATE_MAX
+};
+
+enum pgs_kbd_state_bat_state {
+    PGS_KBD_STATE_BAT_STATE_UNKNOWN = 0,
+
+    PGS_KBD_STATE_BAT_STATE_IDLE,
+    PGS_KBD_STATE_BAT_STATE_CHARGING,
+
+    PGS_KBD_STATE_BAT_STATE_MAX
+};
+
 enum pgs_kbd_state_type {
     PGS_KBD_STATE_TYPE_UNKNOWN = 0,
 
@@ -111,7 +142,8 @@ struct pgs_kbd_params
     void * cjson;
 };
 
-struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path);
 void pgs_kbd_params_delete(struct pgs_kbd_params * params);
+struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path);
+struct pgs_kbd_state * pgs_kbd_params_state_get(struct pgs_kbd_params * params, uint8_t type);
 
 #endif

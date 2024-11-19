@@ -238,3 +238,17 @@ void pgs_kbd_params_delete(struct pgs_kbd_params * params)
     if(params->cjson) cJSON_Delete(params->cjson);
     lv_free(params);
 }
+
+struct pgs_kbd_state * pgs_kbd_params_state_get(struct pgs_kbd_params * params, uint8_t type)
+{
+    struct pgs_kbd_state * state = NULL;
+
+    for(uint8_t i = 0; i < params->states_count; i++) {
+        if(params->states[i].type == type) {
+            state = &params->states[i];
+            break;
+        }
+    }
+
+    return state;
+}
