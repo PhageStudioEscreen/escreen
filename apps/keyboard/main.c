@@ -6,8 +6,7 @@
 
 #include "pgs_modules.h"
 #include "pgs_utils.h"
-#include "pgs_kbd_params.h"
-#include "keyboard_state.h"
+#include "pgs_app_keyboard.h"
 
 static lv_group_t * gmain;
 static lv_group_t * gback;
@@ -64,7 +63,7 @@ int main(void)
 
     lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x000000), LV_PART_MAIN);
 
-    keyboard_state_init(lv_screen_active(), gmain, main_key_cb);
+    pgs_app_keyboard_init(lv_screen_active(), gmain, main_key_cb);
     pgs_backlist_init(lv_layer_top(), gback, back_key_cb);
 
     lv_indev_set_group(pgs_get_keyboard(), gmain);

@@ -10,6 +10,9 @@ APP_COBJS 		= $(APP_CSRCS:.c=$(OBJEXT))
 AFLAGS 			+= "-I$(CURDIR)/src"
 CFLAGS 			+= "-I$(CURDIR)/src"
 CXXFLAGS 		+= "-I$(CURDIR)/src"
+AFLAGS 			+= "-I$(CURDIR)/src/widgets"
+CFLAGS 			+= "-I$(CURDIR)/src/widgets"
+CXXFLAGS 		+= "-I$(CURDIR)/src/widgets"
 
 BIN 			=  $(addprefix pgs_, $(shell basename $(CURDIR)))
 BUILD_APP_DIR	= $(BUILD_DIR)/$(BIN)

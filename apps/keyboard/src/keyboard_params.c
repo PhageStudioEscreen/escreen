@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <dirent.h>
 #include "pgs_utils.h"
-#include "pgs_kbd_params.h"
+#include "keyboard_params.h"
 #include "cJSON.h"
 
 #define STRNCMP_UTIL(str1, str2) strncmp((str1), (str2), sizeof(str2))
@@ -164,48 +164,48 @@ failed:
 static uint8_t pgs_parse_state_type(const char * name)
 {
     if(!STRNCMP_UTIL(name, "macro")) {
-        return PGS_KBD_STATE_TYPE_MACRO;
+        return PGS_WIDGETS_TYPE_MACRO;
     } else if(!STRNCMP_UTIL(name, "macro1")) {
-        return PGS_KBD_STATE_TYPE_MACRO1;
+        return PGS_WIDGETS_TYPE_MACRO1;
     } else if(!STRNCMP_UTIL(name, "macro2")) {
-        return PGS_KBD_STATE_TYPE_MACRO2;
+        return PGS_WIDGETS_TYPE_MACRO2;
     } else if(!STRNCMP_UTIL(name, "layer")) {
-        return PGS_KBD_STATE_TYPE_LAYER;
+        return PGS_WIDGETS_TYPE_LAYER;
     } else if(!STRNCMP_UTIL(name, "capslock")) {
-        return PGS_KBD_STATE_TYPE_CAPSLOCK;
+        return PGS_WIDGETS_TYPE_CAPSLOCK;
     } else if(!STRNCMP_UTIL(name, "numlock")) {
-        return PGS_KBD_STATE_TYPE_NUMLOCK;
+        return PGS_WIDGETS_TYPE_NUMLOCK;
     } else if(!STRNCMP_UTIL(name, "ble1")) {
-        return PGS_KBD_STATE_TYPE_BLE1;
+        return PGS_WIDGETS_TYPE_BLE1;
     } else if(!STRNCMP_UTIL(name, "ble2")) {
-        return PGS_KBD_STATE_TYPE_BLE2;
+        return PGS_WIDGETS_TYPE_BLE2;
     } else if(!STRNCMP_UTIL(name, "ble3")) {
-        return PGS_KBD_STATE_TYPE_BLE3;
+        return PGS_WIDGETS_TYPE_BLE3;
     } else if(!STRNCMP_UTIL(name, "2g4")) {
-        return PGS_KBD_STATE_TYPE_2G4;
+        return PGS_WIDGETS_TYPE_2G4;
     } else if(!STRNCMP_UTIL(name, "usb")) {
-        return PGS_KBD_STATE_TYPE_USB;
+        return PGS_WIDGETS_TYPE_USB;
     } else if(!STRNCMP_UTIL(name, "scr")) {
-        return PGS_KBD_STATE_TYPE_SCR;
+        return PGS_WIDGETS_TYPE_SCR;
     } else if(!STRNCMP_UTIL(name, "bat")) {
-        return PGS_KBD_STATE_TYPE_BAT;
+        return PGS_WIDGETS_TYPE_BAT;
     } else {
-        return PGS_KBD_STATE_TYPE_UNKNOWN;
+        return PGS_WIDGETS_TYPE_UNKNOWN;
     }
 }
 
 static uint8_t pgs_parse_anim(const char * anim, uint8_t default_anim)
 {
     if(!STRNCMP_UTIL(anim, "fade")) {
-        return PGS_KBD_ANIM_FADE;
+        return PGS_WIDGETS_ANIM_FADE;
     } else if(!STRNCMP_UTIL(anim, "left_right")) {
-        return PGS_KBD_ANIM_LEFT_RIGHT;
+        return PGS_WIDGETS_ANIM_LEFT_RIGHT;
     } else if(!STRNCMP_UTIL(anim, "right_left")) {
-        return PGS_KBD_ANIM_RIGHT_LEFT;
+        return PGS_WIDGETS_ANIM_RIGHT_LEFT;
     } else if(!STRNCMP_UTIL(anim, "up_down")) {
-        return PGS_KBD_ANIM_UP_DOWN;
+        return PGS_WIDGETS_ANIM_UP_DOWN;
     } else if(!STRNCMP_UTIL(anim, "down_up")) {
-        return PGS_KBD_ANIM_DOWN_UP;
+        return PGS_WIDGETS_ANIM_DOWN_UP;
     } else {
         return default_anim;
     }
@@ -489,7 +489,7 @@ static lv_font_t * pgs_parse_font(const char * font, lv_font_t * default_font)
     }
 }
 
-struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
+struct keyboard_params * keyboard_params_parse(const char * json_path)
 {
     uint32_t size;
 
@@ -510,12 +510,12 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
         goto err1;
     }
 
-    struct pgs_kbd_params * params = lv_malloc(sizeof(struct pgs_kbd_params));
+    struct keyboard_params * params = lv_malloc(sizeof(struct keyboard_params));
     if(!cjson_root) {
         LV_LOG_WARN("malloc failed\n");
         goto err2;
     }
-    lv_memzero(params, sizeof(struct pgs_kbd_params));
+    lv_memzero(params, sizeof(struct keyboard_params));
     params->cjson = cjson_root;
 
     /* base */
@@ -533,7 +533,7 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
     if(cjson_states && cJSON_IsArray(cjson_states)) {
         int count            = cJSON_GetArraySize(cjson_states);
         params->states_count = 0;
-        params->states       = lv_malloc(sizeof(struct pgs_kbd_state) * count);
+        params->states       = lv_malloc(sizeof(struct pgs_widgets_params_state) * count);
         if(!params->states) {
             goto err3;
         }
@@ -553,10 +553,11 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
                 params->states[params->states_count].type   = pgs_parse_state_type(cjson_name->valuestring);
                 params->states[params->states_count].enable = cjson_enable->valueint;
                 params->states[params->states_count].align  = pgs_parse_align(cjson_align->valuestring);
-                params->states[params->states_count].anim = pgs_parse_anim(cjson_anim->valuestring, PGS_KBD_ANIM_FADE);
-                params->states[params->states_count].opa  = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
-                params->states[params->states_count].x    = cjson_x->valueint;
-                params->states[params->states_count].y    = cjson_y->valueint;
+                params->states[params->states_count].anim =
+                    pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+                params->states[params->states_count].opa = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+                params->states[params->states_count].x   = cjson_x->valueint;
+                params->states[params->states_count].y   = cjson_y->valueint;
                 params->states_count++;
             }
         }
@@ -578,14 +579,14 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
             CJSON_PARSE_Y(cjson_keyroll);
             CJSON_PARSE_N(cjson_keyroll);
 
-            params->keyroll = lv_malloc(sizeof(struct pgs_kbd_keyroll));
+            params->keyroll = lv_malloc(sizeof(struct pgs_widgets_params_keyroll));
             if(!params->keyroll) {
                 goto err4;
             }
 
             params->keyroll->enable     = cjson_enable->valueint;
             params->keyroll->align      = pgs_parse_align(cjson_align->valuestring);
-            params->keyroll->anim       = pgs_parse_anim(cjson_anim->valuestring, PGS_KBD_ANIM_FADE);
+            params->keyroll->anim       = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
             params->keyroll->opa        = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
             params->keyroll->coloration = cjson_coloration->valuestring;
             params->keyroll->x          = cjson_x->valueint;
@@ -610,14 +611,14 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
             CJSON_PARSE_W(cjson_apmchart);
             CJSON_PARSE_H(cjson_apmchart);
 
-            params->apmchart = lv_malloc(sizeof(struct pgs_kbd_apmchart));
+            params->apmchart = lv_malloc(sizeof(struct pgs_widgets_params_apmchart));
             if(!params->apmchart) {
                 goto err5;
             }
 
             params->apmchart->enable = cjson_enable->valueint;
             params->apmchart->align  = pgs_parse_align(cjson_align->valuestring);
-            params->apmchart->anim   = pgs_parse_anim(cjson_anim->valuestring, PGS_KBD_ANIM_FADE);
+            params->apmchart->anim   = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
             params->apmchart->color  = pgs_parse_color(cjson_color->valuestring, 0xFF6086);
             params->apmchart->opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
             params->apmchart->x      = cjson_x->valueint;
@@ -645,7 +646,7 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
             CJSON_PARSE_W(cjson_apmlabel);
             CJSON_PARSE_H(cjson_apmlabel);
 
-            params->apmlabel = lv_malloc(sizeof(struct pgs_kbd_label));
+            params->apmlabel = lv_malloc(sizeof(struct pgs_widgets_params_label));
             if(!params->apmlabel) {
                 goto err6;
             }
@@ -653,7 +654,7 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
             params->apmlabel->enable     = cjson_enable->valueint;
             params->apmlabel->align      = pgs_parse_align(cjson_align->valuestring);
             params->apmlabel->text_align = pgs_parse_align(cjson_text_align->valuestring);
-            params->apmlabel->anim       = pgs_parse_anim(cjson_anim->valuestring, PGS_KBD_ANIM_FADE);
+            params->apmlabel->anim       = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
             params->apmlabel->color      = pgs_parse_color(cjson_color->valuestring, 0xFF6086);
             params->apmlabel->opa        = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
             params->apmlabel->font       = pgs_parse_font(cjson_font->valuestring, LV_FONT_DEFAULT);
@@ -670,7 +671,7 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
     if(cjson_labels && cJSON_IsArray(cjson_labels)) {
         int count            = cJSON_GetArraySize(cjson_labels);
         params->labels_count = 0;
-        params->labels       = lv_malloc(sizeof(struct pgs_kbd_label) * count);
+        params->labels       = lv_malloc(sizeof(struct pgs_widgets_params_label) * count);
         if(!params->labels) {
             goto err7;
         }
@@ -695,7 +696,8 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
                 params->labels[params->labels_count].enable     = cjson_enable->valueint;
                 params->labels[params->labels_count].align      = pgs_parse_align(cjson_align->valuestring);
                 params->labels[params->labels_count].text_align = pgs_parse_align(cjson_text_align->valuestring);
-                params->labels[params->labels_count].anim  = pgs_parse_anim(cjson_anim->valuestring, PGS_KBD_ANIM_FADE);
+                params->labels[params->labels_count].anim =
+                    pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
                 params->labels[params->labels_count].color = pgs_parse_color(cjson_color->valuestring, 0xF0F0F0);
                 params->labels[params->labels_count].opa   = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
                 params->labels[params->labels_count].font  = pgs_parse_font(cjson_font->valuestring, LV_FONT_DEFAULT);
@@ -714,7 +716,7 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
     if(cjson_images && cJSON_IsArray(cjson_images)) {
         int count            = cJSON_GetArraySize(cjson_images);
         params->images_count = 0;
-        params->images       = lv_malloc(sizeof(struct pgs_kbd_image) * count);
+        params->images       = lv_malloc(sizeof(struct pgs_widgets_params_image) * count);
         if(!params->images) {
             goto err8;
         }
@@ -733,10 +735,11 @@ struct pgs_kbd_params * pgs_kbd_params_parse(const char * json_path)
 
                 params->images[params->images_count].enable = cjson_enable->valueint;
                 params->images[params->images_count].align  = pgs_parse_align(cjson_align->valuestring);
-                params->images[params->images_count].anim = pgs_parse_anim(cjson_anim->valuestring, PGS_KBD_ANIM_FADE);
-                params->images[params->images_count].opa  = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
-                params->images[params->images_count].x    = cjson_x->valueint;
-                params->images[params->images_count].y    = cjson_y->valueint;
+                params->images[params->images_count].anim =
+                    pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+                params->images[params->images_count].opa = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+                params->images[params->images_count].x   = cjson_x->valueint;
+                params->images[params->images_count].y   = cjson_y->valueint;
                 params->images_count++;
             }
         }
@@ -774,7 +777,7 @@ err1:
     return NULL;
 }
 
-void pgs_kbd_params_delete(struct pgs_kbd_params * params)
+void keyboard_params_delete(struct keyboard_params * params)
 {
     if(!params) {
         return;
@@ -789,9 +792,9 @@ void pgs_kbd_params_delete(struct pgs_kbd_params * params)
     lv_free(params);
 }
 
-struct pgs_kbd_state * pgs_kbd_params_state_get(struct pgs_kbd_params * params, uint8_t type)
+struct pgs_widgets_params_state * keyboard_params_state_get(struct keyboard_params * params, uint8_t type)
 {
-    struct pgs_kbd_state * state = NULL;
+    struct pgs_widgets_params_state * state = NULL;
 
     for(uint8_t i = 0; i < params->states_count; i++) {
         if(params->states[i].type == type) {

@@ -30,6 +30,10 @@
 #include "../../../lvgl/src/display/lv_display_private.h"
 #endif
 
+#if LV_USE_DEMO_WIDGETS
+#include "../../../lvgl/demos/widgets/lv_demo_widgets.h"
+#endif
+
 /**********************
  *      TYPEDEFS
  **********************/

@@ -1,8 +1,7 @@
 #
 # Makefile
 #
-LVGL_DIR_NAME 	?= lvgl
-LVGL_DIR 		?= $(shell pwd)
+PGS_ESCREEN_DIR 		?= $(shell pwd)
 
 prefix 			?= /usr
 bindir 			?= $(prefix)/bin
@@ -13,7 +12,7 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security \
 					-Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body \
 					-Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -std=gnu99
-CFLAGS			?= -O3 -g0 -I$(LVGL_DIR)/ \
+CFLAGS			?= -O3 -g0 -I$(PGS_ESCREEN_DIR)/ \
 					-I$(STAGING_DIR)/usr/include/libdrm \
 					-I$(STAGING_DIR)/usr/include/libkms \
 					-I$(STAGING_DIR)/usr/include/cjson \
@@ -23,11 +22,11 @@ CFLAGS			?= -O3 -g0 -I$(LVGL_DIR)/ \
 					-I$(STAGING_DIR)/usr/include $(WARNINGS)
 LDFLAGS			?= -lm -lz -L$(STAGING_DIR)/usr/lib -ldrm -linput -lxkbcommon -lavformat -lavcodec -lavutil -lswscale -lpthread -ldbus-1 -lpng -ljpeg -lcjson
 
-include $(LVGL_DIR)/lvgl/lvgl.mk
-include $(LVGL_DIR)/modules/modules.mk
-include $(LVGL_DIR)/utils/utils.mk
+include $(PGS_ESCREEN_DIR)/lvgl/lvgl.mk
+include $(PGS_ESCREEN_DIR)/modules/modules.mk
+include $(PGS_ESCREEN_DIR)/utils/utils.mk
 
-CSRCS 			+=$(LVGL_DIR)/mouse_cursor_icon.c 
+CSRCS 			+=$(PGS_ESCREEN_DIR)/mouse_cursor_icon.c 
 OBJEXT 			?= .o
 AOBJS 			= $(ASRCS:.S=$(OBJEXT))
 COBJS 			= $(CSRCS:.c=$(OBJEXT))
@@ -63,14 +62,14 @@ install:
 	 	filename=$$(basename $$file | sed 's/^pgs_//'); \
 	 	if [ "$$filename" != "menu" ]; then \
 	 		install -d $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename; \
-			cp $(LVGL_DIR)/apps/$$filename/icon.png $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/icon.png; \
+			cp $(PGS_ESCREEN_DIR)/apps/$$filename/icon.png $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/icon.png; \
 	 	fi; \
 	 	install $$file $(TARGET_DIR)$(bindir)/; \
 	done
-	@cp -r $(LVGL_DIR)/xkb $(TARGET_DIR)$(sharedir)/X11
-	@cp -r $(LVGL_DIR)/services/* $(TARGET_DIR)$(sharedir)/dbus-1/services
+	@cp -r $(PGS_ESCREEN_DIR)/xkb $(TARGET_DIR)$(sharedir)/X11
+	@cp -r $(PGS_ESCREEN_DIR)/services/* $(TARGET_DIR)$(sharedir)/dbus-1/services
 	@install -d $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
-	@cp -r $(LVGL_DIR)/apps/keyboard/themes $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
+	@cp -r $(PGS_ESCREEN_DIR)/apps/keyboard/themes $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
 
 .PHONY: uninstall
 uninstall:

@@ -1,13 +1,23 @@
 #
 # Makefile
 #
+
+APP_CSRCS		=
+APP_CSRCS 		+= $(shell find $(CURDIR)/src -type f -name '*.c')
+APP_CSRCS 		+= $(shell find $(CURDIR)/assets -type f -name '*.c')
+APP_COBJS 		= $(APP_CSRCS:.c=$(OBJEXT))
+
+AFLAGS 			+= "-I$(CURDIR)/src"
+CFLAGS 			+= "-I$(CURDIR)/src"
+CXXFLAGS 		+= "-I$(CURDIR)/src"
+
 BIN 			=  $(addprefix pgs_, $(shell basename $(CURDIR)))
 BUILD_APP_DIR	= $(BUILD_DIR)/$(BIN)
 BUILD_OBJ_DIR 	= ./build/obj
 MAINSRC         = ./main.c
 MAINOBJ 		= $(MAINSRC:.c=$(OBJEXT))
-SRCS 			= $(ASRCS) $(CSRCS) $(MAINSRC)
-OBJS 			= $(AOBJS) $(COBJS) $(MAINOBJ)
+SRCS 			= $(ASRCS) $(CSRCS) $(APP_CSRCS) $(MAINSRC)
+OBJS 			= $(AOBJS) $(COBJS) $(APP_COBJS) $(MAINOBJ)
 TARGET 			= $(addprefix $(BUILD_OBJ_DIR)/, $(patsubst ./%, %, $(OBJS)))
 
 .PHONY: all clean

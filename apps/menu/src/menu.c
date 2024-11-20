@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <dirent.h>
+#include <unistd.h>
 #include "menu.h"
 #include "pgs_modules.h"
 #include "pgs_utils.h"
