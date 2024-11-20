@@ -1,10 +1,13 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <fcntl.h>
 
 #include "pgs_modules.h"
 #include "pgs_utils.h"
 #include "pgs_kbd_params.h"
+#include "keyboard_state.h"
 
 static lv_group_t * gmain;
 static lv_group_t * gback;
@@ -29,9 +32,32 @@ static void back_key_cb(uint32_t keycode)
     }
 }
 
+static uint32_t randomseed(void)
+{
+    int fd = open("/dev/urandom", O_RDONLY);
+    if(fd < 0) {
+        perror("Failed to open /dev/urandom");
+        return 0;
+    }
+
+    uint32_t random_number;
+    ssize_t result = read(fd, &random_number, sizeof(random_number));
+    if(result != sizeof(random_number)) {
+        perror("Failed to read from /dev/urandom");
+        close(fd);
+        return 0;
+    }
+
+    close(fd);
+
+    return random_number;
+}
+
 int main(void)
 {
     pgs_lvgl_init("keyboard");
+
+    srand(randomseed());
 
     gmain = lv_group_create();
     gback = lv_group_create();

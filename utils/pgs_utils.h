@@ -10,7 +10,19 @@
 #define PGS_DBUS_MENU_NAME PGS_DBUS_NAME_PREFIX PGS_DBUS_MENU
 #define PGS_DBUS_MENU_PATH PGS_DBUS_PATH_PREFIX PGS_DBUS_MENU
 
+LV_FONT_DECLARE(lv_font_helveticarounded_8);
+LV_FONT_DECLARE(lv_font_helveticarounded_10);
+LV_FONT_DECLARE(lv_font_helveticarounded_12);
+LV_FONT_DECLARE(lv_font_helveticarounded_14);
+LV_FONT_DECLARE(lv_font_helveticarounded_16);
+LV_FONT_DECLARE(lv_font_helveticarounded_18);
+LV_FONT_DECLARE(lv_font_helveticarounded_20);
+LV_FONT_DECLARE(lv_font_helveticarounded_22);
 LV_FONT_DECLARE(lv_font_helveticarounded_24);
+LV_FONT_DECLARE(lv_font_helveticarounded_26);
+LV_FONT_DECLARE(lv_font_helveticarounded_28);
+LV_FONT_DECLARE(lv_font_helveticarounded_30);
+LV_FONT_DECLARE(lv_font_helveticarounded_32);
 
 void pgs_lvgl_init(const char * name);
 const char * pgs_get_name(void);

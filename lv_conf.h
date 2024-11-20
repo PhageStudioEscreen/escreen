@@ -311,9 +311,9 @@
  *If LV_USE_LOG is enabled an error message will be printed on failure*/
 #define LV_USE_ASSERT_NULL          1   /*Check if the parameter is NULL. (Very fast, recommended)*/
 #define LV_USE_ASSERT_MALLOC        1   /*Checks is the memory is successfully allocated or no. (Very fast, recommended)*/
-#define LV_USE_ASSERT_STYLE         0
-#define LV_USE_ASSERT_MEM_INTEGRITY 0
-#define LV_USE_ASSERT_OBJ           0
+#define LV_USE_ASSERT_STYLE         1
+#define LV_USE_ASSERT_MEM_INTEGRITY 1
+#define LV_USE_ASSERT_OBJ           1
 
 /*Add a custom handler when assert happens e.g. to restart the MCU*/
 #define LV_ASSERT_HANDLER_INCLUDE <stdlib.h>
@@ -487,6 +487,19 @@
 #define LV_FONT_MONTSERRAT_44 1
 #define LV_FONT_MONTSERRAT_46 1
 #define LV_FONT_MONTSERRAT_48 1
+#define LV_FONT_HELVETICAROUNDED_8 1
+#define LV_FONT_HELVETICAROUNDED_10 1
+#define LV_FONT_HELVETICAROUNDED_12 1
+#define LV_FONT_HELVETICAROUNDED_14 1
+#define LV_FONT_HELVETICAROUNDED_16 1
+#define LV_FONT_HELVETICAROUNDED_18 1
+#define LV_FONT_HELVETICAROUNDED_20 1
+#define LV_FONT_HELVETICAROUNDED_22 1
+#define LV_FONT_HELVETICAROUNDED_24 1
+#define LV_FONT_HELVETICAROUNDED_26 1
+#define LV_FONT_HELVETICAROUNDED_28 1
+#define LV_FONT_HELVETICAROUNDED_30 1
+#define LV_FONT_HELVETICAROUNDED_32 1
 
 /*Demonstrate special features*/
 #define LV_FONT_MONTSERRAT_28_COMPRESSED 1

@@ -107,7 +107,7 @@ int32_t pgs_anim_callback_get_image_frame(lv_anim_t * a)
     return usr->val;
 }
 
-void pgs_animation_blink_fade(lv_obj_t * obj, uint32_t on, uint32_t off, uint32_t count)
+void pgs_animation_blink_fade(lv_obj_t * obj, uint32_t on, uint32_t off, uint32_t count, uint8_t max)
 {
     pgs_anim_user_data_t * usr = lv_malloc(sizeof(pgs_anim_user_data_t));
     usr->target                = obj;
@@ -118,7 +118,7 @@ void pgs_animation_blink_fade(lv_obj_t * obj, uint32_t on, uint32_t off, uint32_
     lv_anim_set_duration(&anim, on);
     lv_anim_set_user_data(&anim, usr);
     lv_anim_set_custom_exec_cb(&anim, pgs_anim_callback_set_opacity);
-    lv_anim_set_values(&anim, LV_OPA_0, LV_OPA_100);
+    lv_anim_set_values(&anim, LV_OPA_0, max);
     lv_anim_set_path_cb(&anim, lv_anim_path_linear);
     lv_anim_set_delay(&anim, 0);
     lv_anim_set_deleted_cb(&anim, pgs_anim_callback_free_user_data);

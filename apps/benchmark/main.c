@@ -4,6 +4,7 @@
 
 #include "pgs_modules.h"
 #include "pgs_utils.h"
+#include "pgs_benchmark.h"
 
 static lv_group_t * gmain;
 static lv_group_t * gback;

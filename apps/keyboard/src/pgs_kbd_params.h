@@ -56,35 +56,50 @@ enum pgs_kbd_state_type {
     PGS_KBD_STATE_TYPE_MAX,
 };
 
-enum pgs_kbd_state_anim {
-    PGS_KBD_STATE_ANIM_NONE = 0,
-    PGS_KBD_STATE_ANIM_ERASE,
-    PGS_KBD_STATE_ANIM_LEFT_RIGHT,
-    PGS_KBD_STATE_ANIM_RIGHT_LEFT,
-    PGS_KBD_STATE_ANIM_UP_DOWN,
-    PGS_KBD_STATE_ANIM_DOWN_UP,
+enum pgs_kbd_anim {
+    PGS_KBD_ANIM_NONE = 0,
+    PGS_KBD_ANIM_FADE,
+    PGS_KBD_ANIM_LEFT_RIGHT,
+    PGS_KBD_ANIM_RIGHT_LEFT,
+    PGS_KBD_ANIM_UP_DOWN,
+    PGS_KBD_ANIM_DOWN_UP,
 };
 
 struct pgs_kbd_state
 {
-    uint8_t type;
     uint8_t enable;
+    uint8_t align;
     uint8_t anim;
+    uint8_t opa;
+
     int32_t x;
     int32_t y;
+
+    uint8_t type;
 };
 
 struct pgs_kbd_keyroll
 {
     uint8_t enable;
-    uint8_t n;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+
     int32_t x;
     int32_t y;
+
+    uint8_t n;
+
+    const char *coloration;
 };
 
 struct pgs_kbd_apmchart
 {
     uint8_t enable;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+
     int32_t x;
     int32_t y;
     uint16_t w;
@@ -96,39 +111,56 @@ struct pgs_kbd_apmlabel
 {
     uint8_t enable;
     uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+    uint8_t text_align;
+
     int32_t x;
     int32_t y;
     uint16_t w;
     uint16_t h;
     uint32_t color;
+
+    const lv_font_t * font;
 };
 
 struct pgs_kbd_label
 {
     uint8_t enable;
-    uint8_t size;
     uint8_t align;
-    const char * text;
+    uint8_t anim;
+    uint8_t opa;
+    uint8_t text_align;
+
     int32_t x;
     int32_t y;
     uint16_t w;
     uint16_t h;
     uint32_t color;
+
+    const lv_font_t * font;
+
+    const char * text;
 };
 
 struct pgs_kbd_image
 {
     uint8_t enable;
-    const char * path;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+
     int32_t x;
     int32_t y;
+
+    const char * path;
 };
 
 struct pgs_kbd_params
 {
-    uint8_t states_count;
-    uint8_t labels_count;
-    uint8_t images_count;
+    uint32_t states_count;
+    uint32_t labels_count;
+    uint32_t images_count;
 
     const char * base;
 

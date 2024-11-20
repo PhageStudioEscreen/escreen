@@ -33,6 +33,6 @@ int32_t pgs_anim_callback_get_image_frame(lv_anim_t * a);
 
 void pgs_animation_stop(lv_obj_t * obj);
 void pgs_animation_blink_none(lv_obj_t * obj, uint32_t on, uint32_t off, uint32_t count);
-void pgs_animation_blink_fade(lv_obj_t * obj, uint32_t on, uint32_t off, uint32_t count);
+void pgs_animation_blink_fade(lv_obj_t * obj, uint32_t on, uint32_t off, uint32_t count, uint8_t max);
 
 #endif
