@@ -50,7 +50,7 @@ const struct keycode_param keycode_params[KC_MAX_COUNT] = {
     KEYCODE_SFT_DEF(KC_2, "@", "2"),
     KEYCODE_SFT_DEF(KC_3, "#", "3"),
     KEYCODE_SFT_DEF(KC_4, "$", "4"),
-    KEYCODE_SFT_DEF(KC_5, "%%", "5"),
+    KEYCODE_SFT_DEF(KC_5, "%", "5"),
     KEYCODE_SFT_DEF(KC_6, "^", "6"),
     KEYCODE_SFT_DEF(KC_7, "&", "7"),
     KEYCODE_SFT_DEF(KC_8, "*", "8"),

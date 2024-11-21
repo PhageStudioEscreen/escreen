@@ -99,6 +99,16 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
 
     keyboard_inst.keyroll = pgs_widgets_keyroll_create(ui_container, params->base, params->keyroll);
 
+    keyboard_inst.wpmlabel = pgs_widgets_wpmlabel_create(ui_container, params->base, params->wpmlabel);
+
+    keyboard_inst.labels = pgs_widgets_labels_create(ui_container, params->base, params->labels, params->labels_count);
+
+    keyboard_inst.images = pgs_widgets_images_create(ui_container, params->base, params->images, params->images_count);
+
+    keyboard_inst.gifs = pgs_widgets_gifs_create(ui_container, params->base, params->gifs, params->gifs_count);
+
+    keyboard_inst.vedios = pgs_widgets_vedios_create(ui_container, params->base, params->vedios, params->vedios_count);
+
     pgs_widgets_macro_set_state(keyboard_inst.macro, PGS_WIDGETS_MACRO_STATE_PAUSE, true, true);
     pgs_widgets_layer_set_current(keyboard_inst.layer, 0);
     pgs_widgets_capslock_set_state(keyboard_inst.capslock, true);
@@ -110,6 +120,7 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
     pgs_widgets_output_set_state(keyboard_inst.usb, PGS_WIDGETS_OUTPUT_STATE_CONNECT, true);
     pgs_widgets_output_set_state(keyboard_inst.scr, PGS_WIDGETS_OUTPUT_STATE_CONNECT, false);
     pgs_widgets_bat_set_state(keyboard_inst.bat, PGS_WIDGETS_BAT_STATE_CHARGING, 90);
+    pgs_widgets_wpmlabel_set_wpm(keyboard_inst.wpmlabel, 110);
 
     return ui_container;
 }

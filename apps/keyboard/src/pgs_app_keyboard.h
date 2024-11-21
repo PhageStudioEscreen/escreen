@@ -19,7 +19,12 @@ struct pgs_app_keyboard
     struct pgs_widgets_output * scr;
     struct pgs_widgets_bat * bat;
     struct pgs_widgets_keyroll * keyroll;
-    struct pgs_widgets_apmchart * apmchart;
+    struct pgs_widgets_wpmchart * wpmchart;
+    struct pgs_widgets_wpmlabel * wpmlabel;
+    struct pgs_widgets_labels * labels;
+    struct pgs_widgets_images * images;
+    struct pgs_widgets_gifs * gifs;
+    struct pgs_widgets_vedios * vedios;
 };
 
 extern struct pgs_app_keyboard keyboard_inst;

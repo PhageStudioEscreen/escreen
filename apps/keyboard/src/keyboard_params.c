@@ -14,7 +14,7 @@
 #define CJSON_PARSE_BEG do
 #define CSJON_PARSE_END while(0)
 
-#define CJSON_PARSE_ARRAY_BEG(start, end) for(uint32_t i = (start); i < (end); i++)
+#define CJSON_PARSE_ARRAY_BEG(start, item, end) for(uint32_t(item) = (start); (item) < (end); (item)++)
 #define CJSON_PARSE_ARRAY_END
 
 #define CJSON_PARSE_NAME(cjson_obj)                                                                                    \
@@ -86,6 +86,12 @@
 #define CJSON_PARSE_N(cjson_obj)                                                                                       \
     cJSON * cjson_n = cJSON_GetObjectItem(cjson_obj, "n");                                                             \
     if(!(cjson_n && cJSON_IsNumber(cjson_n))) {                                                                        \
+        continue;                                                                                                      \
+    }
+
+#define CJSON_PARSE_RADIUS(cjson_obj)                                                                                  \
+    cJSON * cjson_radius = cJSON_GetObjectItem(cjson_obj, "radius");                                                   \
+    if(!(cjson_radius && cJSON_IsNumber(cjson_radius))) {                                                              \
         continue;                                                                                                      \
     }
 
@@ -279,6 +285,21 @@ static int32_t pgs_parse_align(const char * align)
         return LV_ALIGN_OUT_RIGHT_BOTTOM;
     } else {
         return LV_ALIGN_DEFAULT;
+    }
+}
+
+static int32_t pgs_parse_text_align(const char * align)
+{
+    if(!STRNCMP_UTIL(align, "auto")) {
+        return LV_TEXT_ALIGN_AUTO;
+    } else if(!STRNCMP_UTIL(align, "left")) {
+        return LV_TEXT_ALIGN_LEFT;
+    } else if(!STRNCMP_UTIL(align, "center")) {
+        return LV_TEXT_ALIGN_CENTER;
+    } else if(!STRNCMP_UTIL(align, "right")) {
+        return LV_TEXT_ALIGN_RIGHT;
+    } else {
+        return LV_TEXT_ALIGN_AUTO;
     }
 }
 
@@ -538,7 +559,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             goto err3;
         }
 
-        CJSON_PARSE_ARRAY_BEG(0, count)
+        CJSON_PARSE_ARRAY_BEG(0, i, count)
         {
             cJSON * cjson_state = cJSON_GetArrayItem(cjson_states, i);
             if(cjson_state) {
@@ -596,76 +617,77 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         CSJON_PARSE_END;
     }
 
-    /* apmchart */
-    cJSON * cjson_apmchart = NULL;
-    cjson_apmchart         = cJSON_GetObjectItem(cjson_root, "apmchart");
-    if(cjson_apmchart && cJSON_IsObject(cjson_apmchart)) {
+    /* wpmchart */
+    cJSON * cjson_wpmchart = NULL;
+    cjson_wpmchart         = cJSON_GetObjectItem(cjson_root, "wpmchart");
+    if(cjson_wpmchart && cJSON_IsObject(cjson_wpmchart)) {
         CJSON_PARSE_BEG
         {
-            CJSON_PARSE_ENABLE(cjson_apmchart);
-            CJSON_PARSE_ALIGN(cjson_apmchart);
-            CJSON_PARSE_ANIM(cjson_apmchart);
-            CJSON_PARSE_COLOR(cjson_apmchart);
-            CJSON_PARSE_X(cjson_apmchart);
-            CJSON_PARSE_Y(cjson_apmchart);
-            CJSON_PARSE_W(cjson_apmchart);
-            CJSON_PARSE_H(cjson_apmchart);
+            CJSON_PARSE_ENABLE(cjson_wpmchart);
+            CJSON_PARSE_ALIGN(cjson_wpmchart);
+            CJSON_PARSE_ANIM(cjson_wpmchart);
+            CJSON_PARSE_COLOR(cjson_wpmchart);
+            CJSON_PARSE_X(cjson_wpmchart);
+            CJSON_PARSE_Y(cjson_wpmchart);
+            CJSON_PARSE_W(cjson_wpmchart);
+            CJSON_PARSE_H(cjson_wpmchart);
 
-            params->apmchart = lv_malloc(sizeof(struct pgs_widgets_params_apmchart));
-            if(!params->apmchart) {
+            params->wpmchart = lv_malloc(sizeof(struct pgs_widgets_params_wpmchart));
+            if(!params->wpmchart) {
                 goto err5;
             }
 
-            params->apmchart->enable = cjson_enable->valueint;
-            params->apmchart->align  = pgs_parse_align(cjson_align->valuestring);
-            params->apmchart->anim   = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
-            params->apmchart->color  = pgs_parse_color(cjson_color->valuestring, 0xFF6086);
-            params->apmchart->opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
-            params->apmchart->x      = cjson_x->valueint;
-            params->apmchart->y      = cjson_y->valueint;
-            params->apmchart->w      = cjson_w->valueint;
-            params->apmchart->h      = cjson_h->valueint;
+            params->wpmchart->enable = cjson_enable->valueint;
+            params->wpmchart->align  = pgs_parse_align(cjson_align->valuestring);
+            params->wpmchart->anim   = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+            params->wpmchart->color  = pgs_parse_color(cjson_color->valuestring, 0xFF6086);
+            params->wpmchart->opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+            params->wpmchart->x      = cjson_x->valueint;
+            params->wpmchart->y      = cjson_y->valueint;
+            params->wpmchart->w      = cjson_w->valueint;
+            params->wpmchart->h      = cjson_h->valueint;
         }
         CSJON_PARSE_END;
     }
 
-    /* apmlabel */
-    cJSON * cjson_apmlabel = NULL;
-    cjson_apmlabel         = cJSON_GetObjectItem(cjson_root, "apmlabel");
-    if(cjson_apmlabel && cJSON_IsObject(cjson_apmlabel)) {
+    /* wpmlabel */
+    cJSON * cjson_wpmlabel = NULL;
+    cjson_wpmlabel         = cJSON_GetObjectItem(cjson_root, "wpmlabel");
+    if(cjson_wpmlabel && cJSON_IsObject(cjson_wpmlabel)) {
         CJSON_PARSE_BEG
         {
-            CJSON_PARSE_ENABLE(cjson_apmlabel);
-            CJSON_PARSE_ALIGN(cjson_apmlabel);
-            CJSON_PARSE_TEXT_ALIGN(cjson_apmlabel);
-            CJSON_PARSE_ANIM(cjson_apmlabel);
-            CJSON_PARSE_COLOR(cjson_apmlabel);
-            CJSON_PARSE_FONT(cjson_apmlabel);
-            CJSON_PARSE_X(cjson_apmlabel);
-            CJSON_PARSE_Y(cjson_apmlabel);
-            CJSON_PARSE_W(cjson_apmlabel);
-            CJSON_PARSE_H(cjson_apmlabel);
+            CJSON_PARSE_ENABLE(cjson_wpmlabel);
+            CJSON_PARSE_ALIGN(cjson_wpmlabel);
+            CJSON_PARSE_TEXT_ALIGN(cjson_wpmlabel);
+            CJSON_PARSE_ANIM(cjson_wpmlabel);
+            CJSON_PARSE_COLOR(cjson_wpmlabel);
+            CJSON_PARSE_FONT(cjson_wpmlabel);
+            CJSON_PARSE_X(cjson_wpmlabel);
+            CJSON_PARSE_Y(cjson_wpmlabel);
+            CJSON_PARSE_W(cjson_wpmlabel);
+            CJSON_PARSE_H(cjson_wpmlabel);
 
-            params->apmlabel = lv_malloc(sizeof(struct pgs_widgets_params_label));
-            if(!params->apmlabel) {
+            params->wpmlabel = lv_malloc(sizeof(struct pgs_widgets_params_label));
+            if(!params->wpmlabel) {
                 goto err6;
             }
 
-            params->apmlabel->enable     = cjson_enable->valueint;
-            params->apmlabel->align      = pgs_parse_align(cjson_align->valuestring);
-            params->apmlabel->text_align = pgs_parse_align(cjson_text_align->valuestring);
-            params->apmlabel->anim       = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
-            params->apmlabel->color      = pgs_parse_color(cjson_color->valuestring, 0xFF6086);
-            params->apmlabel->opa        = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
-            params->apmlabel->font       = pgs_parse_font(cjson_font->valuestring, LV_FONT_DEFAULT);
-            params->apmlabel->x          = cjson_x->valueint;
-            params->apmlabel->y          = cjson_y->valueint;
-            params->apmlabel->w          = cjson_w->valueint;
-            params->apmlabel->h          = cjson_h->valueint;
+            params->wpmlabel->enable     = cjson_enable->valueint;
+            params->wpmlabel->align      = pgs_parse_align(cjson_align->valuestring);
+            params->wpmlabel->text_align = pgs_parse_text_align(cjson_text_align->valuestring);
+            params->wpmlabel->anim       = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+            params->wpmlabel->color      = pgs_parse_color(cjson_color->valuestring, 0xFF6086);
+            params->wpmlabel->opa        = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+            params->wpmlabel->font       = pgs_parse_font(cjson_font->valuestring, LV_FONT_DEFAULT);
+            params->wpmlabel->x          = cjson_x->valueint;
+            params->wpmlabel->y          = cjson_y->valueint;
+            params->wpmlabel->w          = cjson_w->valueint;
+            params->wpmlabel->h          = cjson_h->valueint;
         }
         CSJON_PARSE_END;
     }
 
+    /* labels */
     cJSON * cjson_labels = NULL;
     cjson_labels         = cJSON_GetObjectItem(cjson_root, "labels");
     if(cjson_labels && cJSON_IsArray(cjson_labels)) {
@@ -676,7 +698,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             goto err7;
         }
 
-        CJSON_PARSE_ARRAY_BEG(0, count)
+        CJSON_PARSE_ARRAY_BEG(0, i, count)
         {
             cJSON * cjson_label = cJSON_GetArrayItem(cjson_labels, i);
             if(cjson_label) {
@@ -695,7 +717,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 params->labels[params->labels_count].text       = cjson_text->valuestring;
                 params->labels[params->labels_count].enable     = cjson_enable->valueint;
                 params->labels[params->labels_count].align      = pgs_parse_align(cjson_align->valuestring);
-                params->labels[params->labels_count].text_align = pgs_parse_align(cjson_text_align->valuestring);
+                params->labels[params->labels_count].text_align = pgs_parse_text_align(cjson_text_align->valuestring);
                 params->labels[params->labels_count].anim =
                     pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
                 params->labels[params->labels_count].color = pgs_parse_color(cjson_color->valuestring, 0xF0F0F0);
@@ -711,6 +733,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         CJSON_PARSE_ARRAY_END;
     }
 
+    /* images */
     cJSON * cjson_images = NULL;
     cjson_images         = cJSON_GetObjectItem(cjson_root, "images");
     if(cjson_images && cJSON_IsArray(cjson_images)) {
@@ -721,7 +744,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             goto err8;
         }
 
-        CJSON_PARSE_ARRAY_BEG(0, count)
+        CJSON_PARSE_ARRAY_BEG(0, i, count)
         {
             cJSON * cjson_image = cJSON_GetArrayItem(cjson_images, i);
             if(cjson_image) {
@@ -732,15 +755,123 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_COLOR(cjson_image);
                 CJSON_PARSE_X(cjson_image);
                 CJSON_PARSE_Y(cjson_image);
+                CJSON_PARSE_RADIUS(cjson_image);
 
                 params->images[params->images_count].enable = cjson_enable->valueint;
                 params->images[params->images_count].align  = pgs_parse_align(cjson_align->valuestring);
                 params->images[params->images_count].anim =
                     pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
-                params->images[params->images_count].opa = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
-                params->images[params->images_count].x   = cjson_x->valueint;
-                params->images[params->images_count].y   = cjson_y->valueint;
+                params->images[params->images_count].opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+                params->images[params->images_count].x      = cjson_x->valueint;
+                params->images[params->images_count].y      = cjson_y->valueint;
+                params->images[params->images_count].path   = cjson_path->valuestring;
+                params->images[params->images_count].radius = cjson_radius->valueint;
                 params->images_count++;
+            }
+        }
+        CJSON_PARSE_ARRAY_END;
+    }
+
+    /* gifs */
+    cJSON * cjson_gifs = NULL;
+    cjson_gifs         = cJSON_GetObjectItem(cjson_root, "gifs");
+    if(cjson_gifs && cJSON_IsArray(cjson_gifs)) {
+        int count          = cJSON_GetArraySize(cjson_gifs);
+        params->gifs_count = 0;
+        params->gifs       = lv_malloc(sizeof(struct pgs_widgets_params_gif) * count);
+        if(!params->gifs) {
+            goto err9;
+        }
+
+        CJSON_PARSE_ARRAY_BEG(0, i, count)
+        {
+            cJSON * cjson_gif = cJSON_GetArrayItem(cjson_gifs, i);
+            if(cjson_gif) {
+                CJSON_PARSE_ENABLE(cjson_gif);
+                CJSON_PARSE_PATH(cjson_gif);
+                CJSON_PARSE_ALIGN(cjson_gif);
+                CJSON_PARSE_ANIM(cjson_gif);
+                CJSON_PARSE_COLOR(cjson_gif);
+                CJSON_PARSE_X(cjson_gif);
+                CJSON_PARSE_Y(cjson_gif);
+                CJSON_PARSE_RADIUS(cjson_gif);
+
+                params->gifs[params->gifs_count].enable = cjson_enable->valueint;
+                params->gifs[params->gifs_count].align  = pgs_parse_align(cjson_align->valuestring);
+                params->gifs[params->gifs_count].anim = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+                params->gifs[params->gifs_count].opa  = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+                params->gifs[params->gifs_count].x    = cjson_x->valueint;
+                params->gifs[params->gifs_count].y    = cjson_y->valueint;
+                params->gifs[params->gifs_count].path = cjson_path->valuestring;
+                params->gifs[params->gifs_count].radius = cjson_radius->valueint;
+                params->gifs_count++;
+            }
+        }
+        CJSON_PARSE_ARRAY_END;
+    }
+
+    /* vedios */
+    cJSON * cjson_vedios = NULL;
+    cjson_vedios         = cJSON_GetObjectItem(cjson_root, "vedios");
+    if(cjson_vedios && cJSON_IsArray(cjson_vedios)) {
+        int count            = cJSON_GetArraySize(cjson_vedios);
+        params->vedios_count = 0;
+        params->vedios       = lv_malloc(sizeof(struct pgs_widgets_params_vedio) * count);
+        if(!params->vedios) {
+            goto err10;
+        }
+
+        CJSON_PARSE_ARRAY_BEG(0, i, count)
+        {
+            cJSON * cjson_vedio = cJSON_GetArrayItem(cjson_vedios, i);
+            if(cjson_vedio) {
+                CJSON_PARSE_ENABLE(cjson_vedio);
+                CJSON_PARSE_ALIGN(cjson_vedio);
+                CJSON_PARSE_ANIM(cjson_vedio);
+                CJSON_PARSE_COLOR(cjson_vedio);
+                CJSON_PARSE_X(cjson_vedio);
+                CJSON_PARSE_Y(cjson_vedio);
+                CJSON_PARSE_RADIUS(cjson_vedio);
+
+                params->vedios[params->vedios_count].enable = cjson_enable->valueint;
+                params->vedios[params->vedios_count].align  = pgs_parse_align(cjson_align->valuestring);
+                params->vedios[params->vedios_count].anim =
+                    pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+                params->vedios[params->vedios_count].opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+                params->vedios[params->vedios_count].x      = cjson_x->valueint;
+                params->vedios[params->vedios_count].y      = cjson_y->valueint;
+                params->vedios[params->vedios_count].radius = cjson_radius->valueint;
+                params->vedios[params->vedios_count].count  = 0;
+
+                cJSON * cjson_paths = NULL;
+                cjson_paths         = cJSON_GetObjectItem(cjson_vedio, "paths");
+                if(cjson_paths && cJSON_IsArray(cjson_paths)) {
+                    int paths_count                            = cJSON_GetArraySize(cjson_vedio);
+                    params->vedios[params->vedios_count].count = 0;
+                    params->vedios[params->vedios_count].paths = lv_malloc(sizeof(const char *) * paths_count);
+                    if(!params->vedios[params->vedios_count].paths) {
+                        for(uint32_t k = 0; k < params->vedios_count; k++) {
+                            if(params->vedios[k].paths) {
+                                lv_free(params->vedios[k].paths);
+                            }
+                        }
+                        goto err11;
+                    }
+
+                    CJSON_PARSE_ARRAY_BEG(0, j, paths_count)
+                    {
+                        cJSON * cjson_path = cJSON_GetArrayItem(cjson_paths, j);
+                        if(!(cjson_path && cJSON_IsString(cjson_path))) {
+                            continue;
+                        }
+
+                        params->vedios[params->vedios_count].paths[params->vedios[params->vedios_count].count] =
+                            cjson_path->valuestring;
+                        params->vedios[params->vedios_count].count++;
+                    }
+                    CJSON_PARSE_ARRAY_END;
+                }
+                params->vedios_count++;
             }
         }
         CJSON_PARSE_ARRAY_END;
@@ -750,14 +881,23 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
 
     return params;
 
+err11:
+    if(params->vedios) lv_free(params->vedios);
+
+err10:
+    if(params->gifs) lv_free(params->gifs);
+
+err9:
+    if(params->images) lv_free(params->images);
+
 err8:
     if(params->labels) lv_free(params->labels);
 
 err7:
-    if(params->apmlabel) lv_free(params->apmlabel);
+    if(params->wpmlabel) lv_free(params->wpmlabel);
 
 err6:
-    if(params->apmchart) lv_free(params->apmchart);
+    if(params->wpmchart) lv_free(params->wpmchart);
 
 err5:
     if(params->keyroll) lv_free(params->keyroll);
@@ -784,8 +924,8 @@ void keyboard_params_delete(struct keyboard_params * params)
     }
     if(params->states) lv_free(params->states);
     if(params->keyroll) lv_free(params->keyroll);
-    if(params->apmchart) lv_free(params->apmchart);
-    if(params->apmlabel) lv_free(params->apmlabel);
+    if(params->wpmchart) lv_free(params->wpmchart);
+    if(params->wpmlabel) lv_free(params->wpmlabel);
     if(params->labels) lv_free(params->labels);
     if(params->images) lv_free(params->images);
     if(params->cjson) cJSON_Delete(params->cjson);

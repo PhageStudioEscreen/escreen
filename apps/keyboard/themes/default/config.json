@@ -120,7 +120,7 @@
         "y": 40,
         "n": 2
     },
-    "apmchart": {
+    "wpmchart": {
         "enable": true,
         "align": "default",
         "anim": "fade",
@@ -130,7 +130,7 @@
         "w": 108,
         "h": 96
     },
-    "apmlabel": {
+    "wpmlabel": {
         "enable": true,
         "align": "default",
         "text-align": "center",
@@ -159,13 +159,62 @@
     ],
     "images": [
         {
-            "path": "./images/barname.png",
+            "path": "images/barname.png",
             "enable": true,
-            "align": "center",
+            "align": "default",
             "anim": "fade",
             "color": "FFFFFFFF",
-            "x": 45,
-            "y": 167
+            "x": 30,
+            "y": 151,
+            "radius": 0
+        }
+    ],
+    "gifs": [
+        {
+            "path": "gifs/particle_sphere.gif",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 207,
+            "y": 40,
+            "radius": 8
+        },
+        {
+            "path": "gifs/auska.gif",
+            "enable": false,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 0,
+            "y": 0,
+            "radius": 0
+        }
+    ],
+    "vedios": [
+        {
+            "paths": [
+                "vedios/colors75_bobi.mp4"
+            ],
+            "enable": false,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 0,
+            "y": 0,
+            "radius": 0
+        },
+        {
+            "paths": [
+                "vedios/tom_and_jerry.mp4"
+            ],
+            "enable": false,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 0,
+            "y": 0,
+            "radius": 0
         }
     ]
 }

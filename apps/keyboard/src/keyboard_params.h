@@ -96,7 +96,7 @@ struct pgs_widgets_params_keyroll
     const char * coloration;
 };
 
-struct pgs_widgets_params_apmchart
+struct pgs_widgets_params_wpmchart
 {
     uint8_t enable;
     uint8_t align;
@@ -110,7 +110,7 @@ struct pgs_widgets_params_apmchart
     uint32_t color;
 };
 
-struct pgs_widgets_params_apmlabel
+struct pgs_widgets_params_wpmlabel
 {
     uint8_t enable;
     uint8_t align;
@@ -153,10 +153,40 @@ struct pgs_widgets_params_image
     uint8_t anim;
     uint8_t opa;
 
+    int32_t radius;
     int32_t x;
     int32_t y;
 
     const char * path;
+};
+
+struct pgs_widgets_params_gif
+{
+    uint8_t enable;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+
+    int32_t radius;
+    int32_t x;
+    int32_t y;
+
+    const char * path;
+};
+
+struct pgs_widgets_params_vedio
+{
+    uint8_t enable;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+
+    int32_t radius;
+    int32_t x;
+    int32_t y;
+
+    uint32_t count;
+    const char ** paths;
 };
 
 struct keyboard_params
@@ -164,15 +194,19 @@ struct keyboard_params
     uint32_t states_count;
     uint32_t labels_count;
     uint32_t images_count;
+    uint32_t gifs_count;
+    uint32_t vedios_count;
 
     const char * base;
 
     struct pgs_widgets_params_state * states;
     struct pgs_widgets_params_keyroll * keyroll;
-    struct pgs_widgets_params_apmchart * apmchart;
-    struct pgs_widgets_params_apmlabel * apmlabel;
+    struct pgs_widgets_params_wpmchart * wpmchart;
+    struct pgs_widgets_params_wpmlabel * wpmlabel;
     struct pgs_widgets_params_label * labels;
     struct pgs_widgets_params_image * images;
+    struct pgs_widgets_params_gif * gifs;
+    struct pgs_widgets_params_vedio * vedios;
 
     void * cjson;
 };

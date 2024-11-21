@@ -48,7 +48,7 @@ static uint8_t * alloc_file(const char * filename, uint32_t * size)
     if(res == LV_FS_RES_OK && rn == data_size) {
         *size = rn;
     } else {
-        LV_LOG_WARN("read file failed");
+        LV_LOG_WARN("read file %s failed", filename);
         lv_free(data);
         data = NULL;
     }
@@ -66,6 +66,8 @@ const lv_image_dsc_t * pgs_libpng_decode(const char * path)
     uint32_t png_data_size;
     png_image image;
     lv_image_dsc_t * img;
+
+    LV_LOG_INFO("png decode %s\n", path);
 
     lv_memzero(&image, sizeof(image));
     image.version = PNG_IMAGE_VERSION;

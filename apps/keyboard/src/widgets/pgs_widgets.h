@@ -88,10 +88,47 @@ struct pgs_widgets_keyroll
     lv_obj_t * keys[3];
 };
 
-struct pgs_widgets_apmchart
+struct pgs_widgets_wpmchart
 {
-    struct pgs_widgets_params_apmchart * _apmchart;
+    struct pgs_widgets_params_wpmchart * _wpmchart;
     lv_obj_t * contanier;
+};
+
+struct pgs_widgets_wpmlabel
+{
+    struct pgs_widgets_params_wpmlabel * _wpmlabel;
+    lv_obj_t * text;
+};
+
+struct pgs_widgets_labels
+{
+    struct pgs_widgets_params_label * _labels;
+    uint32_t count;
+    lv_obj_t ** labels;
+};
+
+struct pgs_widgets_images
+{
+    struct pgs_widgets_params_image * _images;
+    uint32_t count;
+    lv_obj_t ** images;
+};
+
+struct pgs_widgets_gifs
+{
+    struct pgs_widgets_params_gif * _gifs;
+    uint32_t count;
+    lv_obj_t ** gifs;
+};
+
+struct pgs_widgets_vedios
+{
+    const char * base;
+    struct pgs_widgets_params_vedio * _vedios;
+    uint32_t count;
+    uint32_t * index;
+    uint32_t * path_count;
+    lv_obj_t ** vedios;
 };
 
 struct pgs_widgets_macro * pgs_widgets_macro_create(lv_obj_t * obj, const char * base,
@@ -124,4 +161,19 @@ struct pgs_widgets_keyroll * pgs_widgets_keyroll_create(lv_obj_t * obj, const ch
                                                         struct pgs_widgets_params_keyroll * keyroll);
 void pgs_widgets_keyroll_push(struct pgs_widgets_keyroll * keyroll, uint32_t keycode, uint32_t keycolor);
 
+struct pgs_widgets_wpmlabel * pgs_widgets_wpmlabel_create(lv_obj_t * obj, const char * base,
+                                                          struct pgs_widgets_params_wpmlabel * wpmlabel);
+void pgs_widgets_wpmlabel_set_wpm(struct pgs_widgets_wpmlabel * wpmlabel, uint32_t wpm);
+
+struct pgs_widgets_labels * pgs_widgets_labels_create(lv_obj_t * obj, const char * base,
+                                                      struct pgs_widgets_params_label * labels, uint32_t count);
+
+struct pgs_widgets_images * pgs_widgets_images_create(lv_obj_t * obj, const char * base,
+                                                      struct pgs_widgets_params_image * images, uint32_t count);
+
+struct pgs_widgets_gifs * pgs_widgets_gifs_create(lv_obj_t * obj, const char * base,
+                                                  struct pgs_widgets_params_gif * gifs, uint32_t count);
+
+struct pgs_widgets_vedios * pgs_widgets_vedios_create(lv_obj_t * obj, const char * base,
+                                                      struct pgs_widgets_params_vedio * vedios, uint32_t count);
 #endif
