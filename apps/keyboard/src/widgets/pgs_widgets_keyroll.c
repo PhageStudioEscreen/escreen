@@ -361,7 +361,7 @@ struct pgs_widgets_keyroll * pgs_widgets_keyroll_create(lv_obj_t * obj, const ch
 
 void pgs_widgets_keyroll_push(struct pgs_widgets_keyroll * keyroll, uint32_t keycode, uint32_t keycolor)
 {
-    if(!keyroll) {
+    if(!keyroll || !keyroll->_keyroll->enable) {
         return;
     }
 

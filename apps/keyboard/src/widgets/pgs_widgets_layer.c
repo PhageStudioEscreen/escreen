@@ -1,6 +1,7 @@
 #include "pgs_widgets.h"
 
-struct pgs_widgets_layer * pgs_widgets_layer_create(lv_obj_t * obj, const char * base, struct pgs_widgets_params_state * layer)
+struct pgs_widgets_layer * pgs_widgets_layer_create(lv_obj_t * obj, const char * base,
+                                                    struct pgs_widgets_params_state * layer)
 {
     if(!base) {
         return NULL;
@@ -35,7 +36,7 @@ struct pgs_widgets_layer * pgs_widgets_layer_create(lv_obj_t * obj, const char *
 
 void pgs_widgets_layer_set_current(struct pgs_widgets_layer * layer, uint8_t clayer)
 {
-    if(!layer) {
+    if(!layer || !layer->_layer->enable) {
         return;
     }
 

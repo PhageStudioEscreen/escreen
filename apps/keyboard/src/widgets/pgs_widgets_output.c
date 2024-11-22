@@ -1,6 +1,7 @@
 #include "pgs_widgets.h"
 
-struct pgs_widgets_output * pgs_widgets_output_create(lv_obj_t * obj, const char * base, struct pgs_widgets_params_state * output)
+struct pgs_widgets_output * pgs_widgets_output_create(lv_obj_t * obj, const char * base,
+                                                      struct pgs_widgets_params_state * output)
 {
     if(!base) {
         return NULL;
@@ -96,9 +97,13 @@ struct pgs_widgets_output * pgs_widgets_output_create(lv_obj_t * obj, const char
 
 void pgs_widgets_output_set_state(struct pgs_widgets_output * output, uint8_t state, bool select)
 {
-    if(!output) {
+    if(!output || !output->_output->enable) {
         return;
     }
+
+    pgs_animation_stop(output->disconnected);
+    pgs_animation_stop(output->connected);
+    pgs_animation_stop(output->searching);
 
     if(select) {
         lv_obj_set_style_opa(output->disconnected, LV_OPA_0, 0);
@@ -108,13 +113,29 @@ void pgs_widgets_output_set_state(struct pgs_widgets_output * output, uint8_t st
         }
 
         switch(state) {
+            case PGS_WIDGETS_OUTPUT_STATE_SUSPEND:
+                pgs_animation_blink_fade(output->connected, 1000, 1000, LV_ANIM_REPEAT_INFINITE,
+                                         output->_output->opa / 2);
+                break;
             case PGS_WIDGETS_OUTPUT_STATE_DISCONNECT:
-                pgs_animation_blink_fade(output->disconnected, 250, 250, LV_ANIM_REPEAT_INFINITE, output->_output->opa);
+                pgs_animation_blink_fade(output->disconnected, 1000, 1000, LV_ANIM_REPEAT_INFINITE,
+                                         output->_output->opa);
                 break;
             case PGS_WIDGETS_OUTPUT_STATE_CONNECT:
-                pgs_animation_blink_fade(output->connected, 250, 250, LV_ANIM_REPEAT_INFINITE, output->_output->opa);
+                pgs_animation_blink_fade(output->connected, 1000, 1000, LV_ANIM_REPEAT_INFINITE, output->_output->opa);
                 break;
             case PGS_WIDGETS_OUTPUT_STATE_SEARCHING:
+                if(output->searching) {
+                    pgs_animation_blink_fade(output->searching, 500, 500, LV_ANIM_REPEAT_INFINITE,
+                                             output->_output->opa);
+                }
+                break;
+            case PGS_WIDGETS_OUTPUT_STATE_CONFIRM_SELECT:
+            case PGS_WIDGETS_OUTPUT_STATE_CONFIRM_ERASE:
+                pgs_animation_blink_fade(output->connected, 250, 250, LV_ANIM_REPEAT_INFINITE,
+                                         output->_output->opa / 2);
+                break;
+            case PGS_WIDGETS_OUTPUT_STATE_ERASE_ADV:
                 if(output->searching) {
                     pgs_animation_blink_fade(output->searching, 250, 250, LV_ANIM_REPEAT_INFINITE,
                                              output->_output->opa);
@@ -130,34 +151,40 @@ void pgs_widgets_output_set_state(struct pgs_widgets_output * output, uint8_t st
                 break;
         }
     } else {
+        lv_obj_set_style_opa(output->disconnected, LV_OPA_0, 0);
+        lv_obj_set_style_opa(output->connected, LV_OPA_0, 0);
+        if(output->searching) {
+            lv_obj_set_style_opa(output->searching, LV_OPA_0, 0);
+        }
+
         switch(state) {
+            case PGS_WIDGETS_OUTPUT_STATE_SUSPEND:
+                lv_obj_set_style_opa(output->connected, output->_output->opa / 2, 0);
+                break;
             case PGS_WIDGETS_OUTPUT_STATE_DISCONNECT:
                 lv_obj_set_style_opa(output->disconnected, output->_output->opa, 0);
-                lv_obj_set_style_opa(output->connected, LV_OPA_0, 0);
-                if(output->searching) {
-                    lv_obj_set_style_opa(output->searching, LV_OPA_0, 0);
-                }
                 break;
             case PGS_WIDGETS_OUTPUT_STATE_CONNECT:
-                lv_obj_set_style_opa(output->disconnected, LV_OPA_0, 0);
                 lv_obj_set_style_opa(output->connected, output->_output->opa, 0);
-                if(output->searching) {
-                    lv_obj_set_style_opa(output->searching, LV_OPA_0, 0);
-                }
                 break;
             case PGS_WIDGETS_OUTPUT_STATE_SEARCHING:
-                lv_obj_set_style_opa(output->disconnected, LV_OPA_0, 0);
-                lv_obj_set_style_opa(output->connected, LV_OPA_0, 0);
                 if(output->searching) {
                     lv_obj_set_style_opa(output->searching, output->_output->opa, 0);
                 }
                 break;
-            default:
-                lv_obj_set_style_opa(output->disconnected, LV_OPA_0, 0);
-                lv_obj_set_style_opa(output->connected, LV_OPA_0, 0);
+            case PGS_WIDGETS_OUTPUT_STATE_CONFIRM_SELECT:
+            case PGS_WIDGETS_OUTPUT_STATE_CONFIRM_ERASE:
+                pgs_animation_blink_fade(output->connected, 250, 250, LV_ANIM_REPEAT_INFINITE,
+                                         output->_output->opa / 2);
+                break;
+            case PGS_WIDGETS_OUTPUT_STATE_ERASE_ADV:
                 if(output->searching) {
-                    lv_obj_set_style_opa(output->searching, LV_OPA_0, 0);
+                    pgs_animation_blink_fade(output->searching, 250, 250, LV_ANIM_REPEAT_INFINITE,
+                                             output->_output->opa);
                 }
+                break;
+
+            default:
                 pgs_animation_blink_fade(output->disconnected, 100, 100, LV_ANIM_REPEAT_INFINITE, output->_output->opa);
                 pgs_animation_blink_fade(output->connected, 100, 100, LV_ANIM_REPEAT_INFINITE, output->_output->opa);
                 if(output->searching) {

@@ -46,7 +46,7 @@ struct pgs_widgets_capslock * pgs_widgets_capslock_create(lv_obj_t * obj, const 
 
 void pgs_widgets_capslock_set_state(struct pgs_widgets_capslock * capslock, bool on)
 {
-    if(!capslock) {
+    if(!capslock || !capslock->_capslock->enable) {
         return;
     }
 

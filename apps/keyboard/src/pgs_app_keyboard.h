@@ -4,6 +4,7 @@
 #include "lvgl/lvgl.h"
 #include "keyboard_params.h"
 #include "pgs_widgets.h"
+#include "keyboard_hidraw.h"
 
 struct pgs_app_keyboard
 {
@@ -30,5 +31,6 @@ struct pgs_app_keyboard
 extern struct pgs_app_keyboard keyboard_inst;
 
 lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_cb)(uint32_t keycode));
+void pgs_app_keyboard_update(void);
 
 #endif

@@ -19,7 +19,7 @@ struct pgs_backlist_item
 
 lv_obj_t * pgs_backlist_init(lv_obj_t * obj, lv_group_t * group, void (*key_cb)(uint32_t keycode));
 lv_obj_t * pgs_backlist_init_nomenu(lv_obj_t * obj, lv_group_t * group, void (*key_cb)(uint32_t keycode));
-void pgs_backlist_add_item(const char * text, void * icon, lv_event_cb_t event_cb);
+void pgs_backlist_add_item(const char * text, void * icon, lv_event_cb_t event_cb, void* user_data);
 void pgs_backlist_hidden(bool hidden, bool noanim);
 
 #endif

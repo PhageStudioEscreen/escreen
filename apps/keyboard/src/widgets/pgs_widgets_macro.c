@@ -1,7 +1,9 @@
 #include "pgs_widgets.h"
 
-struct pgs_widgets_macro * pgs_widgets_macro_create(lv_obj_t * obj, const char * base, struct pgs_widgets_params_state * macro,
-                                                    struct pgs_widgets_params_state * macro1, struct pgs_widgets_params_state * macro2)
+struct pgs_widgets_macro * pgs_widgets_macro_create(lv_obj_t * obj, const char * base,
+                                                    struct pgs_widgets_params_state * macro,
+                                                    struct pgs_widgets_params_state * macro1,
+                                                    struct pgs_widgets_params_state * macro2)
 {
     if(!base) {
         return NULL;
@@ -87,12 +89,15 @@ struct pgs_widgets_macro * pgs_widgets_macro_create(lv_obj_t * obj, const char *
 
 void pgs_widgets_macro_set_state(struct pgs_widgets_macro * macro, uint8_t state, uint8_t macro1, uint8_t macro2)
 {
-    if(!macro) {
+    if(!macro || !macro->_macro->enable || !macro->_macro1->enable || !macro->_macro2->enable) {
         return;
     }
 
     pgs_animation_stop(macro->macro1);
     pgs_animation_stop(macro->macro2);
+    pgs_animation_stop(macro->macro_pause);
+    pgs_animation_stop(macro->macro_play);
+    pgs_animation_stop(macro->macro_record);
 
     if(macro1) {
         lv_obj_set_style_opa(macro->macro1, macro->_macro1->opa, 0);

@@ -1,6 +1,7 @@
 #include "pgs_widgets.h"
 
-struct pgs_widgets_bat * pgs_widgets_bat_create(lv_obj_t * obj, const char * base, struct pgs_widgets_params_state * bat)
+struct pgs_widgets_bat * pgs_widgets_bat_create(lv_obj_t * obj, const char * base,
+                                                struct pgs_widgets_params_state * bat)
 {
     if(!base) {
         return NULL;
@@ -199,7 +200,7 @@ struct pgs_widgets_bat * pgs_widgets_bat_create(lv_obj_t * obj, const char * bas
 
 void pgs_widgets_bat_set_state(struct pgs_widgets_bat * bat, uint8_t state, uint8_t level)
 {
-    if(!bat) {
+    if(!bat || !bat->_bat->enable) {
         return;
     }
 
@@ -219,6 +220,7 @@ void pgs_widgets_bat_set_state(struct pgs_widgets_bat * bat, uint8_t state, uint
     lv_obj_set_style_opa(bat->charging_80, LV_OPA_0, 0);
     lv_obj_set_style_opa(bat->charging_90, LV_OPA_0, 0);
     lv_obj_set_style_opa(bat->charging_100, LV_OPA_0, 0);
+    pgs_animation_stop(bat->unknown);
 
     if(state == PGS_WIDGETS_BAT_STATE_IDLE) {
         if(level > 95) {

@@ -36,7 +36,7 @@ struct pgs_widgets_wpmlabel * pgs_widgets_wpmlabel_create(lv_obj_t * obj, const 
 
 void pgs_widgets_wpmlabel_set_wpm(struct pgs_widgets_wpmlabel * wpmlabel, uint32_t wpm)
 {
-    if(!wpmlabel) {
+    if(!wpmlabel || !wpmlabel->_wpmlabel->enable) {
         return;
     }
 

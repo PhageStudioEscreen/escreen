@@ -61,10 +61,10 @@ int main(void)
     pgs_backlist_init_nomenu(lv_layer_top(), gback, back_key_cb);
 
     LV_IMG_DECLARE(icont_reboot);
-    pgs_backlist_add_item("REBOOT", &icont_reboot, reboot_event_cb);
+    pgs_backlist_add_item("REBOOT", &icont_reboot, reboot_event_cb, NULL);
 
     LV_IMG_DECLARE(icont_fastboot);
-    pgs_backlist_add_item("FASTBOOT", &icont_fastboot, fastboot_event_cb);
+    pgs_backlist_add_item("FASTBOOT", &icont_fastboot, fastboot_event_cb, NULL);
 
     lv_indev_set_group(pgs_get_keyboard(), gmain);
     pgs_backlist_hidden(true, true);

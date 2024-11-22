@@ -43,6 +43,10 @@ static void apps_event_cb(lv_event_t * event)
         if(cb) {
             cb(event);
         }
+        if(ui_key_cb) {
+            ui_key_cb(LV_KEY_ESC);
+        }
+        pgs_backlist_hidden(true, false);
     } else if(code == LV_EVENT_KEY) {
         lv_group_t * g   = lv_indev_get_group(lv_indev_active());
         uint32_t keycode = lv_indev_get_key(lv_indev_active());
@@ -70,7 +74,7 @@ static void apps_event_cb(lv_event_t * event)
     }
 }
 
-void pgs_backlist_add_item(const char * text, void * icon, lv_event_cb_t event_cb)
+void pgs_backlist_add_item(const char * text, void * icon, lv_event_cb_t event_cb, void * user_data)
 {
     struct pgs_backlist_item * item = lv_malloc(sizeof(struct pgs_backlist_item));
 
@@ -87,6 +91,7 @@ void pgs_backlist_add_item(const char * text, void * icon, lv_event_cb_t event_c
 
     item->container = lv_button_create(ui_container_list);
     lv_obj_remove_style_all(item->container);
+    lv_obj_set_user_data(item->container, user_data);
     lv_obj_add_event_cb(item->container, apps_event_cb, LV_EVENT_FOCUSED, NULL);
     lv_obj_add_event_cb(item->container, apps_event_cb, LV_EVENT_CLICKED, item->event_cb);
     lv_obj_add_event_cb(item->container, apps_event_cb, LV_EVENT_KEY, NULL);
@@ -118,6 +123,7 @@ void pgs_backlist_add_item(const char * text, void * icon, lv_event_cb_t event_c
     lv_obj_set_style_text_color(item->text, lv_color_hex(0xF0F0F0), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(item->text, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(item->text, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_long_mode(item->text, LV_LABEL_LONG_SCROLL_CIRCULAR);
 
     lv_group_add_obj(ui_group, item->container);
 
@@ -157,11 +163,11 @@ static lv_obj_t * _pgs_backlist_init(lv_obj_t * obj, lv_group_t * group, void (*
     lv_obj_set_scroll_snap_y(ui_container_list, LV_SCROLL_SNAP_START);
 
     LV_IMG_DECLARE(icont_back);
-    pgs_backlist_add_item("BACK", &icont_back, back_event_cb);
+    pgs_backlist_add_item("BACK", &icont_back, back_event_cb, NULL);
 
     LV_IMG_DECLARE(icont_menu);
     if(!nomenu) {
-        pgs_backlist_add_item("MENU", &icont_menu, menu_event_cb);
+        pgs_backlist_add_item("MENU", &icont_menu, menu_event_cb, NULL);
     }
 
     return ui_container_backlist;

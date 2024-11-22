@@ -61,15 +61,18 @@ int main(void)
     gmain = lv_group_create();
     gback = lv_group_create();
 
+    keyboard_hidraw_init();
+
     lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x000000), LV_PART_MAIN);
 
-    pgs_app_keyboard_init(lv_screen_active(), gmain, main_key_cb);
     pgs_backlist_init(lv_layer_top(), gback, back_key_cb);
+    pgs_app_keyboard_init(lv_screen_active(), gmain, main_key_cb);
 
     lv_indev_set_group(pgs_get_keyboard(), gmain);
     pgs_backlist_hidden(true, true);
 
     while(1) {
+        pgs_app_keyboard_update();
         usleep(1000 * lv_timer_handler());
     }
 

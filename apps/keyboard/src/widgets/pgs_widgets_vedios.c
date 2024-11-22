@@ -67,7 +67,7 @@ struct pgs_widgets_vedios * pgs_widgets_vedios_create(lv_obj_t * obj, const char
         target->index[i]      = 0;
         target->path_count[i] = vedios[i].count;
 
-        if(vedios[i].paths[0] == '/') {
+        if(vedios[i].paths[0][0] == '/') {
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s", base, vedios[i].paths[0]);
         } else {
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s/%s", base, vedios[i].paths[0]);

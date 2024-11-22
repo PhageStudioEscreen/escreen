@@ -46,7 +46,7 @@ struct pgs_widgets_numlock * pgs_widgets_numlock_create(lv_obj_t * obj, const ch
 
 void pgs_widgets_numlock_set_state(struct pgs_widgets_numlock * numlock, bool on)
 {
-    if(!numlock) {
+    if(!numlock || !numlock->_numlock->enable) {
         return;
     }
 
