@@ -121,14 +121,14 @@ struct pgs_widgets_gifs
     lv_obj_t ** gifs;
 };
 
-struct pgs_widgets_vedios
+struct pgs_widgets_videos
 {
     const char * base;
-    struct pgs_widgets_params_vedio * _vedios;
+    struct pgs_widgets_params_video * _videos;
     uint32_t count;
     uint32_t * index;
     uint32_t * path_count;
-    lv_obj_t ** vedios;
+    lv_obj_t ** videos;
 };
 
 struct pgs_widgets_macro * pgs_widgets_macro_create(lv_obj_t * obj, const char * base,
@@ -174,6 +174,6 @@ struct pgs_widgets_images * pgs_widgets_images_create(lv_obj_t * obj, const char
 struct pgs_widgets_gifs * pgs_widgets_gifs_create(lv_obj_t * obj, const char * base,
                                                   struct pgs_widgets_params_gif * gifs, uint32_t count);
 
-struct pgs_widgets_vedios * pgs_widgets_vedios_create(lv_obj_t * obj, const char * base,
-                                                      struct pgs_widgets_params_vedio * vedios, uint32_t count);
+struct pgs_widgets_videos * pgs_widgets_videos_create(lv_obj_t * obj, const char * base,
+                                                      struct pgs_widgets_params_video * videos, uint32_t count);
 #endif

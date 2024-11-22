@@ -202,7 +202,7 @@ struct pgs_widgets_params_gif
     const char * path;
 };
 
-struct pgs_widgets_params_vedio
+struct pgs_widgets_params_video
 {
     uint8_t enable;
     uint8_t align;
@@ -223,7 +223,7 @@ struct keyboard_params
     uint32_t labels_count;
     uint32_t images_count;
     uint32_t gifs_count;
-    uint32_t vedios_count;
+    uint32_t videos_count;
 
     const char * base;
 
@@ -234,7 +234,7 @@ struct keyboard_params
     struct pgs_widgets_params_label * labels;
     struct pgs_widgets_params_image * images;
     struct pgs_widgets_params_gif * gifs;
-    struct pgs_widgets_params_vedio * vedios;
+    struct pgs_widgets_params_video * videos;
 
     void * cjson;
 };

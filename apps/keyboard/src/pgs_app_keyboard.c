@@ -214,7 +214,7 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
 
     keyboard_inst.gifs = pgs_widgets_gifs_create(ui_container, params->base, params->gifs, params->gifs_count);
 
-    keyboard_inst.vedios = pgs_widgets_vedios_create(ui_container, params->base, params->vedios, params->vedios_count);
+    keyboard_inst.videos = pgs_widgets_videos_create(ui_container, params->base, params->videos, params->videos_count);
 
     pgs_widgets_macro_set_state(keyboard_inst.macro, PGS_WIDGETS_MACRO_STATE_PAUSE, false, false);
     pgs_widgets_layer_set_current(keyboard_inst.layer, 0);

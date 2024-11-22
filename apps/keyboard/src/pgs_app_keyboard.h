@@ -25,7 +25,7 @@ struct pgs_app_keyboard
     struct pgs_widgets_labels * labels;
     struct pgs_widgets_images * images;
     struct pgs_widgets_gifs * gifs;
-    struct pgs_widgets_vedios * vedios;
+    struct pgs_widgets_videos * videos;
 };
 
 extern struct pgs_app_keyboard keyboard_inst;

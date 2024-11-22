@@ -1,5 +1,4 @@
 {
-    "base": "/usr/share/pgs/apps/keyboard/themes/default",
     "states": [
         {
             "name": "macro",
@@ -121,7 +120,7 @@
         "n": 2
     },
     "wpmchart": {
-        "enable": true,
+        "enable": false,
         "align": "default",
         "anim": "fade",
         "color": "FFFF6086",
@@ -191,10 +190,10 @@
             "radius": 0
         }
     ],
-    "vedios": [
+    "videos": [
         {
             "paths": [
-                "vedios/colors75_bobi.mp4"
+                "videos/colors75_bobi.mp4"
             ],
             "enable": false,
             "align": "default",
@@ -206,7 +205,7 @@
         },
         {
             "paths": [
-                "vedios/tom_and_jerry.mp4"
+                "videos/tom_and_jerry.mp4"
             ],
             "enable": false,
             "align": "default",

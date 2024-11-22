@@ -33,7 +33,7 @@ struct pgs_widgets_images * pgs_widgets_images_create(lv_obj_t * obj, const char
         }
 
         if(images[i].path[0] == '/'){
-            lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s", base, images[i].path);
+            lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s", images[i].path);
         }else{
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s/%s", base, images[i].path);
         }

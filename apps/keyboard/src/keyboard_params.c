@@ -545,7 +545,19 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
     if(cjson_base && cJSON_IsString(cjson_base)) {
         params->base = cjson_base->valuestring;
     } else {
-        params->base = "/usr/share/pgs/themes/default";
+        const char * lastSlash = strrchr(json_path, '/');
+        if(lastSlash != NULL) {
+            size_t dirPathLength = lastSlash - json_path;
+            char * dirPath       = strdup(json_path);
+            if(!dirPath) {
+                params->base = "/usr/share/pgs/themes/default";
+            } else {
+                dirPath[dirPathLength] = '\0';
+                params->base           = dirPath;
+            }
+        } else {
+            params->base = "/usr/share/pgs/themes/default";
+        }
     }
 
     /* states */
@@ -810,49 +822,49 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         CJSON_PARSE_ARRAY_END;
     }
 
-    /* vedios */
-    cJSON * cjson_vedios = NULL;
-    cjson_vedios         = cJSON_GetObjectItem(cjson_root, "vedios");
-    if(cjson_vedios && cJSON_IsArray(cjson_vedios)) {
-        int count            = cJSON_GetArraySize(cjson_vedios);
-        params->vedios_count = 0;
-        params->vedios       = lv_malloc(sizeof(struct pgs_widgets_params_vedio) * count);
-        if(!params->vedios) {
+    /* videos */
+    cJSON * cjson_videos = NULL;
+    cjson_videos         = cJSON_GetObjectItem(cjson_root, "videos");
+    if(cjson_videos && cJSON_IsArray(cjson_videos)) {
+        int count            = cJSON_GetArraySize(cjson_videos);
+        params->videos_count = 0;
+        params->videos       = lv_malloc(sizeof(struct pgs_widgets_params_video) * count);
+        if(!params->videos) {
             goto err10;
         }
 
         CJSON_PARSE_ARRAY_BEG(0, i, count)
         {
-            cJSON * cjson_vedio = cJSON_GetArrayItem(cjson_vedios, i);
-            if(cjson_vedio) {
-                CJSON_PARSE_ENABLE(cjson_vedio);
-                CJSON_PARSE_ALIGN(cjson_vedio);
-                CJSON_PARSE_ANIM(cjson_vedio);
-                CJSON_PARSE_COLOR(cjson_vedio);
-                CJSON_PARSE_X(cjson_vedio);
-                CJSON_PARSE_Y(cjson_vedio);
-                CJSON_PARSE_RADIUS(cjson_vedio);
+            cJSON * cjson_video = cJSON_GetArrayItem(cjson_videos, i);
+            if(cjson_video) {
+                CJSON_PARSE_ENABLE(cjson_video);
+                CJSON_PARSE_ALIGN(cjson_video);
+                CJSON_PARSE_ANIM(cjson_video);
+                CJSON_PARSE_COLOR(cjson_video);
+                CJSON_PARSE_X(cjson_video);
+                CJSON_PARSE_Y(cjson_video);
+                CJSON_PARSE_RADIUS(cjson_video);
 
-                params->vedios[params->vedios_count].enable = cjson_enable->valueint;
-                params->vedios[params->vedios_count].align  = pgs_parse_align(cjson_align->valuestring);
-                params->vedios[params->vedios_count].anim =
+                params->videos[params->videos_count].enable = cjson_enable->valueint;
+                params->videos[params->videos_count].align  = pgs_parse_align(cjson_align->valuestring);
+                params->videos[params->videos_count].anim =
                     pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
-                params->vedios[params->vedios_count].opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
-                params->vedios[params->vedios_count].x      = cjson_x->valueint;
-                params->vedios[params->vedios_count].y      = cjson_y->valueint;
-                params->vedios[params->vedios_count].radius = cjson_radius->valueint;
-                params->vedios[params->vedios_count].count  = 0;
+                params->videos[params->videos_count].opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+                params->videos[params->videos_count].x      = cjson_x->valueint;
+                params->videos[params->videos_count].y      = cjson_y->valueint;
+                params->videos[params->videos_count].radius = cjson_radius->valueint;
+                params->videos[params->videos_count].count  = 0;
 
                 cJSON * cjson_paths = NULL;
-                cjson_paths         = cJSON_GetObjectItem(cjson_vedio, "paths");
+                cjson_paths         = cJSON_GetObjectItem(cjson_video, "paths");
                 if(cjson_paths && cJSON_IsArray(cjson_paths)) {
-                    int paths_count                            = cJSON_GetArraySize(cjson_vedio);
-                    params->vedios[params->vedios_count].count = 0;
-                    params->vedios[params->vedios_count].paths = lv_malloc(sizeof(const char *) * paths_count);
-                    if(!params->vedios[params->vedios_count].paths) {
-                        for(uint32_t k = 0; k < params->vedios_count; k++) {
-                            if(params->vedios[k].paths) {
-                                lv_free(params->vedios[k].paths);
+                    int paths_count                            = cJSON_GetArraySize(cjson_video);
+                    params->videos[params->videos_count].count = 0;
+                    params->videos[params->videos_count].paths = lv_malloc(sizeof(const char *) * paths_count);
+                    if(!params->videos[params->videos_count].paths) {
+                        for(uint32_t k = 0; k < params->videos_count; k++) {
+                            if(params->videos[k].paths) {
+                                lv_free(params->videos[k].paths);
                             }
                         }
                         goto err11;
@@ -865,13 +877,13 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                             continue;
                         }
 
-                        params->vedios[params->vedios_count].paths[params->vedios[params->vedios_count].count] =
+                        params->videos[params->videos_count].paths[params->videos[params->videos_count].count] =
                             cjson_path->valuestring;
-                        params->vedios[params->vedios_count].count++;
+                        params->videos[params->videos_count].count++;
                     }
                     CJSON_PARSE_ARRAY_END;
                 }
-                params->vedios_count++;
+                params->videos_count++;
             }
         }
         CJSON_PARSE_ARRAY_END;
@@ -882,7 +894,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
     return params;
 
 err11:
-    if(params->vedios) lv_free(params->vedios);
+    if(params->videos) lv_free(params->videos);
 
 err10:
     if(params->gifs) lv_free(params->gifs);
