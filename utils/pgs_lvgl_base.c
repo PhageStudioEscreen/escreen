@@ -31,7 +31,7 @@ static void lv_linux_disp_init(void)
 {
     const char * device = getenv_default("PGS_DRM_CARD", "/dev/dri/card0");
     display             = lv_linux_drm_create();
-    lv_display_set_rotation(display, LV_DISPLAY_ROTATION_90);
+    lv_display_set_rotation(display, LV_DISPLAY_ROTATION_270);
     lv_linux_drm_set_file(display, device, -1);
     lv_display_set_default(display);
 }
@@ -44,8 +44,8 @@ static lv_indev_t * indev_mouse;
 
 static void lv_linux_input_init(void)
 {
-    const char * indev_keyboard_path = getenv_default("PGS_KEYBOARD", "/dev/input/event1");
-    const char * indev_mouse_path    = getenv_default("PGS_MOUSE", "/dev/input/event2");
+    const char * indev_keyboard_path = getenv_default("PGS_KEYBOARD", "/dev/input/event2");
+    const char * indev_mouse_path    = getenv_default("PGS_MOUSE", "/dev/input/event3");
     lv_group_t * g                   = lv_group_create();
 
     lv_group_set_default(g);

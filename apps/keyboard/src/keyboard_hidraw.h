@@ -3,8 +3,8 @@
 #include <pthread.h>
 #include "pgs_modules.h"
 
-pthread_mutex_t hidraw_mutex;
-chry_ringbuffer_t hidraw_rxrb;
+extern pthread_mutex_t hidraw_mutex;
+extern chry_ringbuffer_t hidraw_rxrb;
 
 enum escreen_report_ids {
     /* Reserved */

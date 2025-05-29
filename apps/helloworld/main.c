@@ -74,14 +74,14 @@ int main(void)
 
     lv_obj_t * ui_container = lv_obj_create(lv_screen_active());
     lv_obj_remove_style_all(ui_container);
-    lv_obj_set_width(ui_container, 320);
-    lv_obj_set_height(ui_container, 172);
+    lv_obj_set_width(ui_container, lv_pct(100));
+    lv_obj_set_height(ui_container, lv_pct(100));
     lv_obj_set_align(ui_container, LV_ALIGN_CENTER);
     lv_obj_clear_flag(ui_container, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
     lv_obj_t * label = lv_label_create(ui_container);
     lv_label_set_text(label, "HELLO WORLD");
-    lv_obj_set_style_text_font(label, &lv_font_helveticarounded_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(label, &lv_font_helveticarounded_28, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_add_event_cb(label, apps_event_cb, LV_EVENT_CLICKED, NULL);
