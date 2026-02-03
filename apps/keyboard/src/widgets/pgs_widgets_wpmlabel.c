@@ -26,7 +26,7 @@ struct pgs_widgets_wpmlabel * pgs_widgets_wpmlabel_create(lv_obj_t * obj, const 
     lv_obj_set_y(target->text, wpmlabel->y);
     lv_obj_set_align(target->text, wpmlabel->align);
     lv_obj_set_style_opa(target->text, wpmlabel->opa, 0);
-    lv_label_set_text_fmt(target->text, "N/A WPM");
+    lv_label_set_text_fmt(target->text, "N/A");
     lv_obj_set_style_text_color(target->text, lv_color_hex(wpmlabel->color), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(target->text, wpmlabel->text_align, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(target->text, wpmlabel->font, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -40,5 +40,5 @@ void pgs_widgets_wpmlabel_set_wpm(struct pgs_widgets_wpmlabel * wpmlabel, uint32
         return;
     }
 
-    lv_label_set_text_fmt(wpmlabel->text, "%d WPM", wpm);
+    lv_label_set_text_fmt(wpmlabel->text, "%d", wpm);
 }

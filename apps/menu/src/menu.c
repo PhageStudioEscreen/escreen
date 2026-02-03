@@ -14,31 +14,21 @@
 #define PGS_SHARE_MENU_PATH PGS_SHARE_PATH "menu/"
 #define PGS_SHARE_APP_PATH PGS_SHARE_PATH "apps"
 
-static lv_style_t ui_line_style;
+// static lv_style_t ui_line_style;
 static lv_obj_t * ui_container;
-static lv_obj_t * ui_icon_menu;
-static lv_obj_t * ui_icon_menu_label;
-static lv_obj_t * ui_escreen_label;
-static lv_obj_t * ui_line_top;
-static lv_obj_t * ui_icon_prev;
-static lv_obj_t * ui_icon_prev_label;
-static lv_obj_t * ui_icon_next;
-static lv_obj_t * ui_icon_next_label;
-static lv_obj_t * ui_icon_open;
-static lv_obj_t * ui_icon_open_lable;
-static lv_obj_t * ui_line_bottom;
+static lv_obj_t * ui_img_bg;
 static lv_obj_t * ui_container_apps;
-static lv_obj_t * ui_lable_app;
+static lv_obj_t * ui_label_app;
 static lv_group_t * ui_group;
 static void (*ui_key_cb)(uint32_t keycode);
 
-static lv_point_precise_t top_line_points[]    = {{10, 32}, {310, 32}};
-static lv_point_precise_t bottom_line_points[] = {{10, 141}, {310, 141}};
+static const char * input_file = "/usr/share/pgs/menu/current";
 
 static struct _pgs_list global_list;
 
 static char full_path[PATH_MAX];
 static char icon_path[PATH_MAX];
+static char full_name[PATH_MAX];
 
 static void to_uppercase(char * str)
 {
@@ -80,12 +70,25 @@ static void apps_event_cb(lv_event_t * event)
         //     lv_obj_move_to_index(lv_obj_get_child(ui_container_apps, -1), 0);
         // }
 
-        lv_label_set_text(ui_lable_app, lv_event_get_user_data(event));
+        lv_label_set_text(ui_label_app, lv_event_get_user_data(event));
     } else if(code == LV_EVENT_CLICKED) {
         char dbus_name[128] = {0};
         char dbus_path[128] = {0};
 
         struct pgs_application * app = lv_event_get_user_data(event);
+
+        do {
+            FILE * file = fopen(input_file, "w");
+            if(file == NULL) {
+                break;
+            }
+            if(fprintf(file, "%s\n", app->name) < 0) {
+                fclose(file);
+                break;
+            }
+
+            fclose(file);
+        } while(0);
 
         lv_snprintf(dbus_name, sizeof(dbus_name), PGS_DBUS_NAME_PREFIX "%s", app->name);
         lv_snprintf(dbus_path, sizeof(dbus_path), PGS_DBUS_PATH_PREFIX "%s", app->name);
@@ -153,7 +156,7 @@ static void apps_register(const char * path)
     lv_obj_add_event_cb(app->button, apps_event_cb, LV_EVENT_FOCUSED, app->name);
     lv_obj_add_event_cb(app->button, apps_event_cb, LV_EVENT_CLICKED, app);
     lv_obj_add_event_cb(app->button, apps_event_cb, LV_EVENT_KEY, NULL);
-    lv_obj_set_size(app->button, 64, 64);
+    lv_obj_set_size(app->button, 96, 96);
     lv_obj_set_style_bg_opa(app->button, LV_OPA_0, LV_PART_MAIN);
 
     LV_IMG_DECLARE(icon_app);
@@ -182,126 +185,62 @@ lv_obj_t * pgs_apps_menu_init(lv_obj_t * obj, lv_group_t * group, void (*key_cb)
     ui_group  = group;
     ui_key_cb = key_cb;
 
-    lv_style_init(&ui_line_style);
-    lv_style_set_line_width(&ui_line_style, 1);
-    lv_style_set_line_color(&ui_line_style, lv_color_hex(0x282828));
-
     ui_container = lv_obj_create(obj);
     lv_obj_remove_style_all(ui_container);
-    lv_obj_set_width(ui_container, 320);
-    lv_obj_set_height(ui_container, 172);
+    lv_obj_set_width(ui_container, lv_disp_get_hor_res(lv_disp_get_default()));
+    lv_obj_set_height(ui_container, lv_disp_get_ver_res(lv_disp_get_default()));
     lv_obj_set_align(ui_container, LV_ALIGN_CENTER);
+    lv_obj_set_style_bg_color(ui_container, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(ui_container, LV_OPA_COVER, 0);
     lv_obj_clear_flag(ui_container, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
-    LV_IMG_DECLARE(icon_menu);
-    ui_icon_menu = lv_image_create(ui_container);
-    lv_image_set_src(ui_icon_menu, &icon_menu);
-    lv_obj_set_width(ui_icon_menu, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_menu, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_menu, 5);
-    lv_obj_set_y(ui_icon_menu, 5);
+    LV_IMG_DECLARE(img_bg);
+    ui_img_bg = lv_image_create(ui_container);
+    lv_image_set_src(ui_img_bg, &img_bg);
+    lv_obj_set_width(ui_img_bg, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_img_bg, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_img_bg, 0);
+    lv_obj_set_y(ui_img_bg, 0);
+    lv_obj_set_align(ui_img_bg, LV_ALIGN_CENTER);
 
-    ui_icon_menu_label = lv_label_create(ui_container);
-    lv_obj_set_width(ui_icon_menu_label, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_menu_label, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_menu_label, 32);
-    lv_obj_set_y(ui_icon_menu_label, 8);
-    lv_label_set_text(ui_icon_menu_label, "MENU");
-    lv_obj_set_style_text_color(ui_icon_menu_label, lv_color_hex(0x282828), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_icon_menu_label, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_escreen_label = lv_label_create(ui_container);
-    lv_obj_set_width(ui_escreen_label, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_escreen_label, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_escreen_label, 232);
-    lv_obj_set_y(ui_escreen_label, 8);
-    lv_label_set_text(ui_escreen_label, "ESCREEN");
-    lv_obj_set_style_text_color(ui_escreen_label, lv_color_hex(0x282828), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_escreen_label, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_line_top = lv_line_create(ui_container);
-    lv_line_set_points(ui_line_top, top_line_points, 2);
-    lv_obj_add_style(ui_line_top, &ui_line_style, 0);
-
-    LV_IMG_DECLARE(icon_prev);
-    ui_icon_prev = lv_image_create(ui_container);
-    lv_image_set_src(ui_icon_prev, &icon_prev);
-    lv_obj_set_width(ui_icon_prev, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_prev, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_prev, 10);
-    lv_obj_set_y(ui_icon_prev, 148);
-
-    ui_icon_prev_label = lv_label_create(ui_container);
-    lv_obj_set_width(ui_icon_prev_label, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_prev_label, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_prev_label, 33);
-    lv_obj_set_y(ui_icon_prev_label, 150);
-    lv_label_set_text(ui_icon_prev_label, "PREV");
-    lv_obj_set_style_text_color(ui_icon_prev_label, lv_color_hex(0x282828), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_icon_prev_label, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    LV_IMG_DECLARE(icon_next);
-    ui_icon_next = lv_image_create(ui_container);
-    lv_image_set_src(ui_icon_next, &icon_next);
-    lv_obj_set_width(ui_icon_next, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_next, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_next, 84);
-    lv_obj_set_y(ui_icon_next, 148);
-
-    ui_icon_next_label = lv_label_create(ui_container);
-    lv_obj_set_width(ui_icon_next_label, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_next_label, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_next_label, 107);
-    lv_obj_set_y(ui_icon_next_label, 150);
-    lv_label_set_text(ui_icon_next_label, "NEXT");
-    lv_obj_set_style_text_color(ui_icon_next_label, lv_color_hex(0x282828), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_icon_next_label, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    LV_IMG_DECLARE(icon_open);
-    ui_icon_open = lv_image_create(ui_container);
-    lv_image_set_src(ui_icon_open, &icon_open);
-    lv_obj_set_width(ui_icon_open, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_open, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_open, 246);
-    lv_obj_set_y(ui_icon_open, 148);
-
-    ui_icon_open_lable = lv_label_create(ui_container);
-    lv_obj_set_width(ui_icon_open_lable, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_icon_open_lable, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_icon_open_lable, 269);
-    lv_obj_set_y(ui_icon_open_lable, 150);
-    lv_label_set_text(ui_icon_open_lable, "OPEN");
-    lv_obj_set_style_text_color(ui_icon_open_lable, lv_color_hex(0x282828), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_icon_open_lable, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_line_bottom = lv_line_create(ui_container);
-    lv_line_set_points(ui_line_bottom, bottom_line_points, 2);
-    lv_obj_add_style(ui_line_bottom, &ui_line_style, 0);
-
-    ui_lable_app = lv_label_create(ui_container);
-    lv_obj_set_width(ui_lable_app, LV_SIZE_CONTENT);
-    lv_obj_set_height(ui_lable_app, LV_SIZE_CONTENT);
-    lv_obj_set_x(ui_lable_app, 0);
-    lv_obj_set_y(ui_lable_app, 119);
-    lv_obj_set_align(ui_lable_app, LV_ALIGN_TOP_MID);
-    lv_label_set_text(ui_lable_app, "???");
-    lv_obj_set_style_text_color(ui_lable_app, lv_color_hex(0x606060), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_lable_app, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_lable_app, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_label_app = lv_label_create(ui_container);
+    lv_obj_set_width(ui_label_app, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_label_app, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_label_app, 0);
+    lv_obj_set_y(ui_label_app, 175);
+    lv_obj_set_align(ui_label_app, LV_ALIGN_TOP_MID);
+    lv_label_set_text(ui_label_app, "???");
+    lv_obj_set_style_text_color(ui_label_app, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_label_app, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_label_app, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_container_apps = lv_obj_create(ui_container);
-    lv_obj_set_width(ui_container_apps, 320);
-    lv_obj_set_height(ui_container_apps, 64);
+    lv_obj_set_width(ui_container_apps, 536);
+    lv_obj_set_height(ui_container_apps, 96);
     lv_obj_set_scrollbar_mode(ui_container_apps, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_scroll_snap_x(ui_container_apps, LV_SCROLL_SNAP_CENTER);
     lv_obj_set_style_bg_opa(ui_container_apps, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_bg_color(ui_container_apps, lv_color_black(), LV_PART_MAIN);
     lv_obj_set_style_border_width(ui_container_apps, 0, LV_PART_MAIN);
-    lv_obj_set_style_pad_column(ui_container_apps, 32, LV_PART_MAIN);
+    lv_obj_set_style_pad_column(ui_container_apps, 48, LV_PART_MAIN);
     lv_obj_set_x(ui_container_apps, 0);
-    lv_obj_set_y(ui_container_apps, 51);
+    lv_obj_set_y(ui_container_apps, 71);
     lv_obj_set_flex_flow(ui_container_apps, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(ui_container_apps, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    bool jump = false;
+    do {
+        FILE * file = fopen(input_file, "r");
+        if(file == NULL) {
+            break;
+        }
+
+        if(fgets(full_name, sizeof(full_name), file) != NULL) {
+            full_name[strcspn(full_name, "\n")] = '\0';
+        }
+
+        fclose(file);
+    } while(0);
 
     DIR * dir;
     struct dirent * entry;
@@ -320,6 +259,10 @@ lv_obj_t * pgs_apps_menu_init(lv_obj_t * obj, lv_group_t * group, void (*key_cb)
 
         lv_snprintf(full_path, sizeof(full_path), "%s/%s", PGS_SHARE_APP_PATH, entry->d_name);
 
+        if(strcmp(entry->d_name, full_name) == 0) {
+            jump = true;
+        }
+
         if(stat(full_path, &statbuf) == 0 && S_ISDIR(statbuf.st_mode)) {
             apps_register(full_path);
         }
@@ -334,7 +277,23 @@ lv_obj_t * pgs_apps_menu_init(lv_obj_t * obj, lv_group_t * group, void (*key_cb)
     lv_obj_scroll_to_view(lv_obj_get_child(ui_container_apps, mid_btn_index), LV_ANIM_OFF);
 
     struct pgs_application * app = PGS_DLIST_ENTRY_FIRST(&global_list, struct pgs_application, list);
-    lv_label_set_text(ui_lable_app, app->name);
+    lv_label_set_text(ui_label_app, app->name);
+
+    if(jump) {
+        char dbus_name[128] = {0};
+        char dbus_path[128] = {0};
+
+        lv_snprintf(dbus_name, sizeof(dbus_name), PGS_DBUS_NAME_PREFIX "%s", full_name);
+        lv_snprintf(dbus_path, sizeof(dbus_path), PGS_DBUS_PATH_PREFIX "%s", full_name);
+
+        pgs_lvgl_suspend();
+        /* wake up app, then kill */
+        pgs_dbus_method_call(dbus_name, dbus_path, 1, getpid());
+        while(1) {
+            /* wait for kill */
+            sleep(1);
+        }
+    }
 
     return ui_container;
 }

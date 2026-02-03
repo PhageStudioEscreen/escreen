@@ -258,8 +258,8 @@ struct pgs_widgets_keyroll * pgs_widgets_keyroll_create(lv_obj_t * obj, const ch
 
     target->container = lv_obj_create(obj);
     lv_obj_remove_style_all(target->container);
-    lv_obj_set_width(target->container, 197);
-    lv_obj_set_height(target->container, 96);
+    lv_obj_set_width(target->container, 300);
+    lv_obj_set_height(target->container, 144);
     lv_obj_set_align(target->container, keyroll->align);
     lv_obj_set_style_opa(target->container, keyroll->opa, 0);
     lv_obj_set_scrollbar_mode(target->container, LV_SCROLLBAR_MODE_OFF);
@@ -267,7 +267,7 @@ struct pgs_widgets_keyroll * pgs_widgets_keyroll_create(lv_obj_t * obj, const ch
     lv_obj_set_style_bg_opa(target->container, LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_bg_color(target->container, lv_color_black(), LV_PART_MAIN);
     lv_obj_set_style_border_width(target->container, 0, LV_PART_MAIN);
-    lv_obj_set_style_pad_column(target->container, 5, LV_PART_MAIN);
+    lv_obj_set_style_pad_column(target->container, 12, LV_PART_MAIN);
     lv_obj_set_x(target->container, keyroll->x);
     lv_obj_set_y(target->container, keyroll->y);
     lv_obj_set_flex_flow(target->container, LV_FLEX_FLOW_ROW_REVERSE);
@@ -276,58 +276,58 @@ struct pgs_widgets_keyroll * pgs_widgets_keyroll_create(lv_obj_t * obj, const ch
     for(uint8_t i = 0; i < (sizeof(target->keys) / sizeof(lv_obj_t *)); i++) {
         target->keys[i] = lv_button_create(target->container);
         lv_obj_remove_style_all(target->keys[i]);
-        lv_obj_set_width(target->keys[i], 96);
-        lv_obj_set_height(target->keys[i], 96);
+        lv_obj_set_width(target->keys[i], 144);
+        lv_obj_set_height(target->keys[i], 144);
         lv_obj_set_style_opa(target->keys[i], 0, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(target->keys[i], lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_bg_opa(target->keys[i], 255, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(target->keys[i], 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_radius(target->keys[i], 8, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(target->keys[i], 12, LV_PART_MAIN | LV_STATE_DEFAULT);
 
         lv_obj_t * label_keycap_top = lv_label_create(target->keys[i]);
-        lv_obj_set_width(label_keycap_top, 24);
-        lv_obj_set_height(label_keycap_top, 24);
-        lv_obj_set_x(label_keycap_top, 23);
-        lv_obj_set_y(label_keycap_top, 15);
+        lv_obj_set_width(label_keycap_top, 36);
+        lv_obj_set_height(label_keycap_top, 36);
+        lv_obj_set_x(label_keycap_top, 33);
+        lv_obj_set_y(label_keycap_top, 25);
         lv_label_set_text_fmt(label_keycap_top, " ");
         lv_obj_set_style_text_color(label_keycap_top, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_opa(label_keycap_top, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_align(label_keycap_top, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_font(label_keycap_top, &lv_font_helveticarounded_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(label_keycap_top, &lv_font_helveticarounded_32, LV_PART_MAIN | LV_STATE_DEFAULT);
 
         lv_obj_t * label_keycap_mid = lv_label_create(target->keys[i]);
-        lv_obj_set_width(label_keycap_mid, 58);
-        lv_obj_set_height(label_keycap_mid, 20);
-        lv_obj_set_x(label_keycap_mid, 20);
-        lv_obj_set_y(label_keycap_mid, 34);
+        lv_obj_set_width(label_keycap_mid, 82);
+        lv_obj_set_height(label_keycap_mid, 24);
+        lv_obj_set_x(label_keycap_mid, 30);
+        lv_obj_set_y(label_keycap_mid, 55);
         lv_label_set_long_mode(label_keycap_mid, LV_LABEL_LONG_CLIP);
         lv_label_set_text(label_keycap_mid, " ");
         lv_obj_set_style_text_color(label_keycap_mid, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_opa(label_keycap_mid, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_align(label_keycap_mid, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_font(label_keycap_mid, &lv_font_helveticarounded_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(label_keycap_mid, &lv_font_helveticarounded_28, LV_PART_MAIN | LV_STATE_DEFAULT);
 
         lv_obj_t * label_keycap_btm = lv_label_create(target->keys[i]);
-        lv_obj_set_width(label_keycap_btm, 24);
-        lv_obj_set_height(label_keycap_btm, 24);
-        lv_obj_set_x(label_keycap_btm, 23);
-        lv_obj_set_y(label_keycap_btm, 50);
+        lv_obj_set_width(label_keycap_btm, 36);
+        lv_obj_set_height(label_keycap_btm, 36);
+        lv_obj_set_x(label_keycap_btm, 33);
+        lv_obj_set_y(label_keycap_btm, 76);
         lv_label_set_text_fmt(label_keycap_btm, " ");
         lv_obj_set_style_text_color(label_keycap_btm, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_opa(label_keycap_btm, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_align(label_keycap_btm, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_font(label_keycap_btm, &lv_font_helveticarounded_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(label_keycap_btm, &lv_font_helveticarounded_32, LV_PART_MAIN | LV_STATE_DEFAULT);
 
         lv_obj_t * label_keycap_sgl = lv_label_create(target->keys[i]);
-        lv_obj_set_width(label_keycap_sgl, 24);
-        lv_obj_set_height(label_keycap_sgl, 24);
-        lv_obj_set_x(label_keycap_sgl, 23);
-        lv_obj_set_y(label_keycap_sgl, 15);
+        lv_obj_set_width(label_keycap_sgl, 36);
+        lv_obj_set_height(label_keycap_sgl, 36);
+        lv_obj_set_x(label_keycap_sgl, 33);
+        lv_obj_set_y(label_keycap_sgl, 25);
         lv_label_set_text_fmt(label_keycap_sgl, " ");
         lv_obj_set_style_text_color(label_keycap_sgl, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_opa(label_keycap_sgl, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_align(label_keycap_sgl, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_font(label_keycap_sgl, &lv_font_helveticarounded_28, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(label_keycap_sgl, &lv_font_helveticarounded_32, LV_PART_MAIN | LV_STATE_DEFAULT);
 
         lv_obj_t * image_keycap = lv_image_create(target->keys[i]);
         if(png_keycap) {

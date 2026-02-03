@@ -220,7 +220,7 @@ const struct keycode_param keycode_params[KC_MAX_COUNT] = {
     KEYCODE_MID_DEF(0xC9, ""),
     KEYCODE_MID_DEF(0xCA, ""),
     KEYCODE_MID_DEF(0xCB, ""),
-    KEYCODE_MID_DEF(0xCC, ""),
+    KEYCODE_MID_DEF(0xCC, ""), 
     KEYCODE_MID_DEF(KC_MS_U, "MsU"),
     KEYCODE_MID_DEF(KC_MS_D, "MsD"),
     KEYCODE_MID_DEF(KC_MS_L, "MsL"),

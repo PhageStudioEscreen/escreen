@@ -33,5 +33,6 @@ lv_indev_t * pgs_get_mouse(void);
 void pgs_lvgl_resume(void);
 void pgs_lvgl_suspend(void);
 void pgs_cleanup(void);
+void pgs_cleanup_reboot(void);
 
 #endif

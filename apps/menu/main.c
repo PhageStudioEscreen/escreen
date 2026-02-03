@@ -27,7 +27,7 @@ static void fastboot_event_cb(lv_event_t * event)
     lv_event_code_t code = lv_event_get_code(event);
 
     if(code == LV_EVENT_CLICKED) {
-        syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, "recovery");
+        syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, "fastboot");
     }
 }
 

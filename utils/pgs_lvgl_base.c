@@ -92,7 +92,7 @@ static void redirection_ttyFIQ0(void)
     setvbuf(stdout, NULL, _IOLBF, 0);
 }
 
-void pgs_cleanup(void)
+void pgs_cleanup_reboot(void)
 {
     pgs_lvgl_suspend();
 
@@ -103,6 +103,13 @@ void pgs_cleanup(void)
         /* wait for kill */
         sleep(1);
     }
+}
+
+void pgs_cleanup(void)
+{
+    system("rm -rf /usr/share/pgs/menu/current");
+
+    pgs_cleanup_reboot();
 }
 
 static void signal_handler(int signum)
