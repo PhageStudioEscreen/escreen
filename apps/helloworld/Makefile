@@ -7,6 +7,15 @@ APP_CSRCS 		+= $(shell find $(CURDIR)/src -type f -name '*.c')
 APP_CSRCS 		+= $(shell find $(CURDIR)/assets -type f -name '*.c')
 APP_COBJS 		= $(APP_CSRCS:.c=$(OBJEXT))
 
+# ---- FFmpeg & ALSA link flags (with pkg-config fallback) ----
+PKG_CONFIG ?= pkg-config
+FFMPEG_PKGS = libavformat libavcodec libswresample libavutil
+ALSA_PKGS = alsa
+
+CFLAGS  += $(shell $(PKG_CONFIG) --cflags $(FFMPEG_PKGS) $(ALSA_PKGS) 2>/dev/null)
+LDFLAGS += $(shell $(PKG_CONFIG) --libs   $(FFMPEG_PKGS) $(ALSA_PKGS) 2>/dev/null)
+LDFLAGS += -lavformat -lavcodec -lswresample -lavutil -lasound -lpthread -lm -lz
+
 AFLAGS 			+= "-I$(CURDIR)/src"
 CFLAGS 			+= "-I$(CURDIR)/src"
 CXXFLAGS 		+= "-I$(CURDIR)/src"

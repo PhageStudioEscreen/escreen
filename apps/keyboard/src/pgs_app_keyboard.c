@@ -76,7 +76,7 @@ static void theme_event_cb(lv_event_t * event)
         lv_obj_set_style_text_opa(text, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_font(text, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(text, LV_LABEL_LONG_SCROLL_CIRCULAR);
-
+        pgs_cleanup_reboot();
         return;
     }
 }
@@ -132,8 +132,7 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
     lv_obj_clear_flag(ui_container, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
     theme_find("/usr/share/pgs/apps/keyboard/themes");
-    theme_find("/mnt/sdcard/themes");
-    theme_find("~/themes");
+    theme_find("/root/themes");
 
     const char * config_json = NULL;
     do {

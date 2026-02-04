@@ -4,6 +4,7 @@
 
 #include "pgs_modules.h"
 #include "pgs_utils.h"
+#include "audio_player.h"
 
 static lv_group_t * gmain;
 static lv_group_t * gback;
@@ -91,6 +92,16 @@ int main(void)
 
     lv_indev_set_group(pgs_get_keyboard(), gmain);
     pgs_backlist_hidden(true, true);
+
+    const char *mp3_list = getenv("PGS_MP3_LIST");
+    if (mp3_list && *mp3_list) {
+        audio_player_start_list(mp3_list);
+    } else {
+        const char *mp3_path = getenv("PGS_MP3_PATH");
+        if (!mp3_path || !*mp3_path)
+            mp3_path = "/usr/share/pgs/apps/helloworld/test.mp3";
+        audio_player_start(mp3_path);
+    }
 
     while(1) {
         usleep(1000 * lv_timer_handler());

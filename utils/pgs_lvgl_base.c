@@ -44,8 +44,8 @@ static lv_indev_t * indev_mouse;
 
 static void lv_linux_input_init(void)
 {
-    const char * indev_keyboard_path = getenv_default("PGS_KEYBOARD", "/dev/input/event2");
-    const char * indev_mouse_path    = getenv_default("PGS_MOUSE", "/dev/input/event3");
+    const char * indev_keyboard_path = getenv_default("PGS_KEYBOARD", "/dev/input/event3");
+    const char * indev_mouse_path    = getenv_default("PGS_MOUSE", "/dev/input/event4");
     lv_group_t * g                   = lv_group_create();
 
     lv_group_set_default(g);

@@ -70,6 +70,7 @@ install:
 	@cp -r $(PGS_ESCREEN_DIR)/services/* $(TARGET_DIR)$(sharedir)/dbus-1/services
 	@install -d $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
 	@cp -r $(PGS_ESCREEN_DIR)/apps/keyboard/themes $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
+	@cp $(PGS_ESCREEN_DIR)/apps/helloworld/test.mp3 $(TARGET_DIR)$(sharedir)/pgs/apps/helloworld/test.mp3
 
 .PHONY: uninstall
 uninstall:
