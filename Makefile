@@ -71,6 +71,7 @@ install:
 	@install -d $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
 	@cp -r $(PGS_ESCREEN_DIR)/apps/keyboard/themes $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
 	@cp $(PGS_ESCREEN_DIR)/apps/helloworld/test.mp3 $(TARGET_DIR)$(sharedir)/pgs/apps/helloworld/test.mp3
+	@cp $(PGS_ESCREEN_DIR)/apps/menu/assets/current $(TARGET_DIR)$(sharedir)/pgs/menu/current
 
 .PHONY: uninstall
 uninstall:
