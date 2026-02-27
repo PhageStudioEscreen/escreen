@@ -96,12 +96,17 @@ enum pgs_widgets_anim {
     PGS_WIDGETS_ANIM_MAX,
 };
 
+enum pgs_widgets_zindex {
+    PGS_WIDGETS_ZINDEX_DEFAULT = 0xffff,
+};
+
 struct pgs_widgets_params_state
 {
     uint8_t enable;
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
 
     int32_t x;
     int32_t y;
@@ -115,6 +120,7 @@ struct pgs_widgets_params_keyroll
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
 
     int32_t x;
     int32_t y;
@@ -130,6 +136,7 @@ struct pgs_widgets_params_wpmchart
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
 
     int32_t x;
     int32_t y;
@@ -144,6 +151,7 @@ struct pgs_widgets_params_wpmlabel
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
     uint8_t text_align;
 
     int32_t x;
@@ -161,6 +169,7 @@ struct pgs_widgets_params_label
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
     uint8_t text_align;
 
     int32_t x;
@@ -180,6 +189,7 @@ struct pgs_widgets_params_image
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
 
     int32_t radius;
     int32_t x;
@@ -194,6 +204,7 @@ struct pgs_widgets_params_gif
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
 
     int32_t radius;
     int32_t x;
@@ -208,6 +219,7 @@ struct pgs_widgets_params_video
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint16_t zindex;
 
     int32_t radius;
     int32_t x;

@@ -33,6 +33,9 @@ struct pgs_widgets_labels * pgs_widgets_labels_create(lv_obj_t * obj, const char
         }
 
         target->labels[i] = lv_label_create(obj);
+        if(labels[i].zindex != PGS_WIDGETS_ZINDEX_DEFAULT) {
+            lv_obj_move_to_index(target->labels[i], labels[i].zindex);
+        }
         lv_obj_set_width(target->labels[i], labels[i].w);
         lv_obj_set_height(target->labels[i], labels[i].h);
         lv_obj_set_x(target->labels[i], labels[i].x);

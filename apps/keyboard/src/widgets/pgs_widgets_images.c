@@ -32,9 +32,9 @@ struct pgs_widgets_images * pgs_widgets_images_create(lv_obj_t * obj, const char
             continue;
         }
 
-        if(images[i].path[0] == '/'){
+        if(images[i].path[0] == '/') {
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s", images[i].path);
-        }else{
+        } else {
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "%s/%s", base, images[i].path);
         }
 
@@ -45,6 +45,9 @@ struct pgs_widgets_images * pgs_widgets_images_create(lv_obj_t * obj, const char
             lv_image_set_src(target->images[i], png);
         }
 
+        if(images[i].zindex != PGS_WIDGETS_ZINDEX_DEFAULT) {
+            lv_obj_move_to_index(target->images[i], images[i].zindex);
+        }
         lv_obj_set_x(target->images[i], images[i].x);
         lv_obj_set_y(target->images[i], images[i].y);
         lv_obj_set_align(target->images[i], images[i].align);

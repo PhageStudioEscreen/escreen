@@ -81,6 +81,9 @@ struct pgs_widgets_videos * pgs_widgets_videos_create(lv_obj_t * obj, const char
 
         lv_obj_set_x(target->videos[i], videos[i].x);
         lv_obj_set_y(target->videos[i], videos[i].y);
+        if(videos[i].zindex != PGS_WIDGETS_ZINDEX_DEFAULT) {
+            lv_obj_move_to_index(target->videos[i], videos[i].zindex);
+        }
         lv_obj_set_align(target->videos[i], videos[i].align);
         lv_obj_set_style_opa(target->videos[i], videos[i].opa, 0);
         lv_obj_set_style_radius(target->videos[i], videos[i].radius, 0);

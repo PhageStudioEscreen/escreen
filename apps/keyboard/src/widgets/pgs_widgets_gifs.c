@@ -32,14 +32,17 @@ struct pgs_widgets_gifs * pgs_widgets_gifs_create(lv_obj_t * obj, const char * b
             continue;
         }
 
-        if(gifs[i].path[0] == '/'){
+        if(gifs[i].path[0] == '/') {
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "S:%s", gifs[i].path);
-        }else{
+        } else {
             lv_snprintf(keyboard_path_buffer, sizeof(keyboard_path_buffer), "S:%s/%s", base, gifs[i].path);
         }
-        
+
         target->gifs[i] = lv_gif_create(obj);
         lv_gif_set_src(target->gifs[i], keyboard_path_buffer);
+        if(gifs[i].zindex != PGS_WIDGETS_ZINDEX_DEFAULT) {
+            lv_obj_move_to_index(target->gifs[i], gifs[i].zindex);
+        }
         lv_obj_set_x(target->gifs[i], gifs[i].x);
         lv_obj_set_y(target->gifs[i], gifs[i].y);
         lv_obj_set_align(target->gifs[i], gifs[i].align);

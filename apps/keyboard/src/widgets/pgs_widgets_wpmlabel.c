@@ -20,6 +20,9 @@ struct pgs_widgets_wpmlabel * pgs_widgets_wpmlabel_create(lv_obj_t * obj, const 
     target->_wpmlabel = wpmlabel;
 
     target->text = lv_label_create(obj);
+    if(wpmlabel->zindex != PGS_WIDGETS_ZINDEX_DEFAULT) {
+        lv_obj_move_to_index(target->text, wpmlabel->zindex);
+    }
     lv_obj_set_width(target->text, wpmlabel->w);
     lv_obj_set_height(target->text, wpmlabel->h);
     lv_obj_set_x(target->text, wpmlabel->x);

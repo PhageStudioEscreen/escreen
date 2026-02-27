@@ -168,6 +168,18 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
         return ui_container;
     }
 
+    keyboard_inst.videos = pgs_widgets_videos_create(ui_container, params->base, params->videos, params->videos_count);
+
+    keyboard_inst.gifs = pgs_widgets_gifs_create(ui_container, params->base, params->gifs, params->gifs_count);
+
+    keyboard_inst.images = pgs_widgets_images_create(ui_container, params->base, params->images, params->images_count);
+
+    keyboard_inst.labels = pgs_widgets_labels_create(ui_container, params->base, params->labels, params->labels_count);
+
+    keyboard_inst.wpmlabel = pgs_widgets_wpmlabel_create(ui_container, params->base, params->wpmlabel);
+
+    keyboard_inst.keyroll = pgs_widgets_keyroll_create(ui_container, params->base, params->keyroll);
+
     keyboard_inst.macro =
         pgs_widgets_macro_create(ui_container, params->base, keyboard_params_state_get(params, PGS_WIDGETS_TYPE_MACRO),
                                  keyboard_params_state_get(params, PGS_WIDGETS_TYPE_MACRO1),
@@ -202,18 +214,6 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
 
     keyboard_inst.bat =
         pgs_widgets_bat_create(ui_container, params->base, keyboard_params_state_get(params, PGS_WIDGETS_TYPE_BAT));
-
-    keyboard_inst.keyroll = pgs_widgets_keyroll_create(ui_container, params->base, params->keyroll);
-
-    keyboard_inst.wpmlabel = pgs_widgets_wpmlabel_create(ui_container, params->base, params->wpmlabel);
-
-    keyboard_inst.labels = pgs_widgets_labels_create(ui_container, params->base, params->labels, params->labels_count);
-
-    keyboard_inst.images = pgs_widgets_images_create(ui_container, params->base, params->images, params->images_count);
-
-    keyboard_inst.gifs = pgs_widgets_gifs_create(ui_container, params->base, params->gifs, params->gifs_count);
-
-    keyboard_inst.videos = pgs_widgets_videos_create(ui_container, params->base, params->videos, params->videos_count);
 
     pgs_widgets_macro_set_state(keyboard_inst.macro, PGS_WIDGETS_MACRO_STATE_PAUSE, false, false);
     pgs_widgets_layer_set_current(keyboard_inst.layer, 0);
