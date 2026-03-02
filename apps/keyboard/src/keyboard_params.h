@@ -130,6 +130,60 @@ struct pgs_widgets_params_keyroll
     const char * coloration;
 };
 
+struct pgs_widgets_params_waitanim
+{
+    uint8_t enable;
+    int32_t radius;
+    int32_t x;
+    int32_t y;
+    uint32_t group;
+
+    const char * path;
+};
+
+struct pgs_widgets_params_keyanim
+{
+    uint8_t enable;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+    uint16_t zindex;
+
+    int32_t radius;
+    int32_t x;
+    int32_t y;
+
+    uint8_t single;
+    uint8_t keep;
+    uint16_t duration;
+
+    uint32_t waitcount;
+    struct pgs_widgets_params_waitanim * waitanims;
+
+    const char * suffix;
+    const char * path;
+};
+
+struct pgs_widgets_params_keysnd
+{
+    uint8_t enable;
+    uint8_t align;
+    uint8_t anim;
+    uint8_t opa;
+    uint16_t zindex;
+
+    int32_t radius;
+    int32_t x;
+    int32_t y;
+
+    uint8_t single;
+    uint8_t keep;
+    uint16_t duration;
+
+    const char * suffix;
+    const char * path;
+};
+
 struct pgs_widgets_params_wpmchart
 {
     uint8_t enable;
@@ -238,9 +292,12 @@ struct keyboard_params
     uint32_t videos_count;
 
     const char * base;
+    uint8_t base_dynamic;
 
     struct pgs_widgets_params_state * states;
     struct pgs_widgets_params_keyroll * keyroll;
+    struct pgs_widgets_params_keyanim * keyanim;
+    struct pgs_widgets_params_keysnd * keysnd;
     struct pgs_widgets_params_wpmchart * wpmchart;
     struct pgs_widgets_params_wpmlabel * wpmlabel;
     struct pgs_widgets_params_label * labels;

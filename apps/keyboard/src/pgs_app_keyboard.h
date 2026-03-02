@@ -20,6 +20,8 @@ struct pgs_app_keyboard
     struct pgs_widgets_output * scr;
     struct pgs_widgets_bat * bat;
     struct pgs_widgets_keyroll * keyroll;
+    struct pgs_widgets_keyanim * keyanim;
+    struct pgs_widgets_keysnd * keysnd;
     struct pgs_widgets_wpmchart * wpmchart;
     struct pgs_widgets_wpmlabel * wpmlabel;
     struct pgs_widgets_labels * labels;

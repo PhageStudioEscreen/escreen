@@ -88,6 +88,29 @@ struct pgs_widgets_keyroll
     lv_obj_t * keys[3];
 };
 
+struct pgs_widgets_keyanim
+{
+    const char * base;
+    struct pgs_widgets_params_keyanim * _keyanim;
+    uint32_t waitcount;
+    uint32_t keycode;
+    uint32_t index;
+    uint32_t group;
+    uint32_t group_max;
+    uint8_t playflag;
+    lv_obj_t * container;
+    lv_obj_t * anim[2];
+    lv_obj_t ** waitanims;
+    lv_timer_t * delay_timer[2];
+};
+
+struct pgs_widgets_keysnd
+{
+    const char * base;
+    struct pgs_widgets_params_keysnd * _keysnd;
+    lv_obj_t ** snd;
+};
+
 struct pgs_widgets_wpmchart
 {
     struct pgs_widgets_params_wpmchart * _wpmchart;
@@ -160,6 +183,11 @@ void pgs_widgets_bat_set_state(struct pgs_widgets_bat * bat, uint8_t state, uint
 struct pgs_widgets_keyroll * pgs_widgets_keyroll_create(lv_obj_t * obj, const char * base,
                                                         struct pgs_widgets_params_keyroll * keyroll);
 void pgs_widgets_keyroll_push(struct pgs_widgets_keyroll * keyroll, uint32_t keycode, uint32_t keycolor);
+
+struct pgs_widgets_keyanim * pgs_widgets_keyanim_create(lv_obj_t * obj, const char * base,
+                                                        struct pgs_widgets_params_keyanim * keyanim);
+
+void pgs_widgets_keyanim_push(struct pgs_widgets_keyanim * keyanim, uint32_t keycode);
 
 struct pgs_widgets_wpmlabel * pgs_widgets_wpmlabel_create(lv_obj_t * obj, const char * base,
                                                           struct pgs_widgets_params_wpmlabel * wpmlabel);

@@ -12,7 +12,7 @@
 #define STRNCMP_UTIL(str1, str2) strncmp((str1), (str2), sizeof(str2))
 
 #define CJSON_PARSE_BEG do
-#define CSJON_PARSE_END while(0)
+#define CJSON_PARSE_END while(0)
 
 #define CJSON_PARSE_ARRAY_BEG(start, item, end) for(uint32_t(item) = (start); (item) < (end); (item)++)
 #define CJSON_PARSE_ARRAY_END
@@ -113,7 +113,29 @@
         continue;                                                                                                      \
     }
 
+#define CJSON_PARSE_SUFFIX(cjson_obj)                                                                                  \
+    cJSON * cjson_suffix = cJSON_GetObjectItem(cjson_obj, "suffix");                                                   \
+    if(!(cjson_suffix && cJSON_IsString(cjson_suffix))) {                                                              \
+        continue;                                                                                                      \
+    }
+
+#define CJSON_PARSE_GROUP(cjson_obj)                                                                                   \
+    cJSON * cjson_group = cJSON_GetObjectItem(cjson_obj, "group");                                                     \
+    if(!(cjson_group && cJSON_IsNumber(cjson_group))) {                                                                \
+        continue;                                                                                                      \
+    }
+
 #define CJSON_PARSE_ZINDEX(cjson_obj) cJSON * cjson_zindex = cJSON_GetObjectItem(cjson_obj, "zindex");
+#define CJSON_CHECK_ZINDEX(cjson_obj) (cjson_obj && cJSON_IsNumber(cjson_obj))
+
+#define CJSON_PARSE_SINGLE(cjson_obj) cJSON * cjson_single = cJSON_GetObjectItem(cjson_obj, "single");
+#define CJSON_CHECK_SINGLE(cjson_obj) (cjson_obj && cJSON_IsBool(cjson_obj))
+
+#define CJSON_PARSE_KEEP(cjson_obj) cJSON * cjson_keep = cJSON_GetObjectItem(cjson_obj, "keep");
+#define CJSON_CHECK_KEEP(cjson_obj) (cjson_obj && cJSON_IsBool(cjson_obj))
+
+#define CJSON_PARSE_DURATION(cjson_obj) cJSON * cjson_duration = cJSON_GetObjectItem(cjson_obj, "duration");
+#define CJSON_CHECK_DURATION(cjson_obj) (cjson_obj && cJSON_IsNumber(cjson_obj))
 
 static uint8_t * alloc_file(const char * filename, uint32_t * size)
 {
@@ -530,20 +552,21 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
     cjson_root = cJSON_Parse(message);
     if(!cjson_root) {
         LV_LOG_WARN("parse failed\n");
-        goto err1;
+        goto err_message;
     }
 
     struct keyboard_params * params = lv_malloc(sizeof(struct keyboard_params));
     if(!cjson_root) {
         LV_LOG_WARN("malloc failed\n");
-        goto err2;
+        goto err_parse;
     }
     lv_memzero(params, sizeof(struct keyboard_params));
     params->cjson = cjson_root;
 
     /* base */
-    cJSON * cjson_base = NULL;
-    cjson_base         = cJSON_GetObjectItem(cjson_root, "base");
+    params->base_dynamic = 0;
+    cJSON * cjson_base   = NULL;
+    cjson_base           = cJSON_GetObjectItem(cjson_root, "base");
     if(cjson_base && cJSON_IsString(cjson_base)) {
         params->base = cjson_base->valuestring;
     } else {
@@ -556,6 +579,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             } else {
                 dirPath[dirPathLength] = '\0';
                 params->base           = dirPath;
+                params->base_dynamic   = 1;
             }
         } else {
             params->base = "/usr/share/pgs/themes/default";
@@ -570,7 +594,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         params->states_count = 0;
         params->states       = lv_malloc(sizeof(struct pgs_widgets_params_state) * count);
         if(!params->states) {
-            goto err3;
+            goto err_malloc;
         }
 
         CJSON_PARSE_ARRAY_BEG(0, i, count)
@@ -586,11 +610,8 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_X(cjson_state);
                 CJSON_PARSE_Y(cjson_state);
 
-                if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                    params->states[params->states_count].zindex = cjson_zindex->valueint;
-                } else {
-                    params->states[params->states_count].zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-                }
+                params->states[params->states_count].zindex =
+                    CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
                 params->states[params->states_count].type   = pgs_parse_state_type(cjson_name->valuestring);
                 params->states[params->states_count].enable = cjson_enable->valueint;
@@ -624,14 +645,11 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
 
             params->keyroll = lv_malloc(sizeof(struct pgs_widgets_params_keyroll));
             if(!params->keyroll) {
-                goto err4;
+                goto err_p_states;
             }
 
-            if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                params->keyroll->zindex = cjson_zindex->valueint;
-            } else {
-                params->keyroll->zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-            }
+            params->keyroll->zindex =
+                CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
             params->keyroll->enable     = cjson_enable->valueint;
             params->keyroll->align      = pgs_parse_align(cjson_align->valuestring);
@@ -642,7 +660,133 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             params->keyroll->y          = cjson_y->valueint;
             params->keyroll->n          = cjson_n->valueint;
         }
-        CSJON_PARSE_END;
+        CJSON_PARSE_END;
+    }
+
+    /* keyanim */
+    cJSON * cjson_keyanim = NULL;
+    cjson_keyanim         = cJSON_GetObjectItem(cjson_root, "keyanim");
+    if(cjson_keyanim && cJSON_IsObject(cjson_keyanim)) {
+        CJSON_PARSE_BEG
+        {
+            CJSON_PARSE_ENABLE(cjson_keyanim);
+            CJSON_PARSE_ALIGN(cjson_keyanim);
+            CJSON_PARSE_ANIM(cjson_keyanim);
+            CJSON_PARSE_COLOR(cjson_keyanim);
+            CJSON_PARSE_ZINDEX(cjson_keyanim);
+            CJSON_PARSE_X(cjson_keyanim);
+            CJSON_PARSE_Y(cjson_keyanim);
+            CJSON_PARSE_RADIUS(cjson_keyanim);
+            CJSON_PARSE_PATH(cjson_keyanim);
+            CJSON_PARSE_SUFFIX(cjson_keyanim);
+            CJSON_PARSE_SINGLE(cjson_keyanim);
+            CJSON_PARSE_KEEP(cjson_keyanim);
+            CJSON_PARSE_DURATION(cjson_keyanim);
+
+            params->keyanim = lv_malloc(sizeof(struct pgs_widgets_params_keyanim));
+            if(!params->keyanim) {
+                goto err_p_keyroll;
+            }
+            lv_memzero(params->keyanim, sizeof(struct pgs_widgets_params_keyanim));
+
+            params->keyanim->zindex =
+                CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
+
+            params->keyanim->single   = CJSON_CHECK_SINGLE(cjson_single) ? cjson_single->valueint : 0;
+            params->keyanim->keep     = CJSON_CHECK_KEEP(cjson_keep) ? cjson_keep->valueint : 0;
+            params->keyanim->duration = CJSON_CHECK_DURATION(cjson_duration) ? cjson_duration->valueint : 0;
+
+            params->keyanim->radius = cjson_radius->valueint;
+            params->keyanim->path   = cjson_path->valuestring;
+            params->keyanim->suffix = cjson_suffix->valuestring;
+            params->keyanim->enable = cjson_enable->valueint;
+            params->keyanim->align  = pgs_parse_align(cjson_align->valuestring);
+            params->keyanim->anim   = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+            params->keyanim->opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+            params->keyanim->x      = cjson_x->valueint;
+            params->keyanim->y      = cjson_y->valueint;
+        }
+        CJSON_PARSE_END;
+
+        /* keyanim-waitanims */
+        cJSON * cjson_waitanims = NULL;
+        cjson_waitanims         = cJSON_GetObjectItem(cjson_keyanim, "waitanims");
+        if(cjson_waitanims && cJSON_IsArray(cjson_waitanims)) {
+            int count                  = cJSON_GetArraySize(cjson_waitanims);
+            params->keyanim->waitcount = 0;
+            params->keyanim->waitanims = lv_malloc(sizeof(struct pgs_widgets_params_waitanim) * count);
+            if(!params->keyanim->waitanims) {
+                goto err_p_keyanim;
+            }
+            lv_memzero(params->keyanim->waitanims, sizeof(struct pgs_widgets_params_waitanim) * count);
+
+            CJSON_PARSE_ARRAY_BEG(0, i, count)
+            {
+                cJSON * cjson_waitanim = cJSON_GetArrayItem(cjson_waitanims, i);
+                if(cjson_waitanim) {
+                    CJSON_PARSE_ENABLE(cjson_waitanim);
+                    CJSON_PARSE_X(cjson_waitanim);
+                    CJSON_PARSE_Y(cjson_waitanim);
+                    CJSON_PARSE_PATH(cjson_waitanim);
+                    CJSON_PARSE_RADIUS(cjson_waitanim);
+                    CJSON_PARSE_GROUP(cjson_waitanim);
+
+                    params->keyanim->waitanims[params->keyanim->waitcount].enable = cjson_enable->valueint;
+                    params->keyanim->waitanims[params->keyanim->waitcount].x      = cjson_x->valueint;
+                    params->keyanim->waitanims[params->keyanim->waitcount].y      = cjson_y->valueint;
+                    params->keyanim->waitanims[params->keyanim->waitcount].path   = cjson_path->valuestring;
+                    params->keyanim->waitanims[params->keyanim->waitcount].radius = cjson_radius->valueint;
+                    params->keyanim->waitanims[params->keyanim->waitcount].group  = cjson_group->valueint;
+                    params->keyanim->waitcount++;
+                }
+            }
+            CJSON_PARSE_ARRAY_END;
+        }
+    }
+
+    /* keysnd */
+    cJSON * cjson_keysnd = NULL;
+    cjson_keysnd         = cJSON_GetObjectItem(cjson_root, "keysnd");
+    if(cjson_keysnd && cJSON_IsObject(cjson_keysnd)) {
+        CJSON_PARSE_BEG
+        {
+            CJSON_PARSE_ENABLE(cjson_keysnd);
+            CJSON_PARSE_ALIGN(cjson_keysnd);
+            CJSON_PARSE_ANIM(cjson_keysnd);
+            CJSON_PARSE_COLOR(cjson_keysnd);
+            CJSON_PARSE_ZINDEX(cjson_keysnd);
+            CJSON_PARSE_X(cjson_keysnd);
+            CJSON_PARSE_Y(cjson_keysnd);
+            CJSON_PARSE_RADIUS(cjson_keysnd);
+            CJSON_PARSE_PATH(cjson_keysnd);
+            CJSON_PARSE_SUFFIX(cjson_keysnd);
+            CJSON_PARSE_SINGLE(cjson_keysnd);
+            CJSON_PARSE_KEEP(cjson_keysnd);
+            CJSON_PARSE_DURATION(cjson_keysnd);
+
+            params->keysnd = lv_malloc(sizeof(struct pgs_widgets_params_keysnd));
+            if(!params->keysnd) {
+                goto err_p_waitanim;
+            }
+
+            params->keysnd->zindex =
+                CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
+
+            params->keysnd->single   = CJSON_CHECK_SINGLE(cjson_single) ? cjson_single->valueint : 0;
+            params->keysnd->keep     = CJSON_CHECK_KEEP(cjson_keep) ? cjson_keep->valueint : 0;
+            params->keysnd->duration = CJSON_CHECK_DURATION(cjson_duration) ? cjson_duration->valueint : 0;
+
+            params->keysnd->path   = cjson_path->valuestring;
+            params->keysnd->suffix = cjson_suffix->valuestring;
+            params->keysnd->enable = cjson_enable->valueint;
+            params->keysnd->align  = pgs_parse_align(cjson_align->valuestring);
+            params->keysnd->anim   = pgs_parse_anim(cjson_anim->valuestring, PGS_WIDGETS_ANIM_FADE);
+            params->keysnd->opa    = pgs_parse_opa(cjson_color->valuestring, LV_OPA_100);
+            params->keysnd->x      = cjson_x->valueint;
+            params->keysnd->y      = cjson_y->valueint;
+            params->keysnd->radius = cjson_radius->valueint;
+        }
+        CJSON_PARSE_END;
     }
 
     /* wpmchart */
@@ -663,14 +807,11 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
 
             params->wpmchart = lv_malloc(sizeof(struct pgs_widgets_params_wpmchart));
             if(!params->wpmchart) {
-                goto err5;
+                goto err_p_keysnd;
             }
 
-            if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                params->wpmchart->zindex = cjson_zindex->valueint;
-            } else {
-                params->wpmchart->zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-            }
+            params->wpmchart->zindex =
+                CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
             params->wpmchart->enable = cjson_enable->valueint;
             params->wpmchart->align  = pgs_parse_align(cjson_align->valuestring);
@@ -682,7 +823,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             params->wpmchart->w      = cjson_w->valueint;
             params->wpmchart->h      = cjson_h->valueint;
         }
-        CSJON_PARSE_END;
+        CJSON_PARSE_END;
     }
 
     /* wpmlabel */
@@ -705,14 +846,11 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
 
             params->wpmlabel = lv_malloc(sizeof(struct pgs_widgets_params_label));
             if(!params->wpmlabel) {
-                goto err6;
+                goto err_p_wpmchart;
             }
 
-            if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                params->wpmlabel->zindex = cjson_zindex->valueint;
-            } else {
-                params->wpmlabel->zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-            }
+            params->wpmlabel->zindex =
+                CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
             params->wpmlabel->enable     = cjson_enable->valueint;
             params->wpmlabel->align      = pgs_parse_align(cjson_align->valuestring);
@@ -726,7 +864,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
             params->wpmlabel->w          = cjson_w->valueint;
             params->wpmlabel->h          = cjson_h->valueint;
         }
-        CSJON_PARSE_END;
+        CJSON_PARSE_END;
     }
 
     /* labels */
@@ -737,7 +875,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         params->labels_count = 0;
         params->labels       = lv_malloc(sizeof(struct pgs_widgets_params_label) * count);
         if(!params->labels) {
-            goto err7;
+            goto err_p_wpmlabel;
         }
 
         CJSON_PARSE_ARRAY_BEG(0, i, count)
@@ -757,11 +895,8 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_W(cjson_label);
                 CJSON_PARSE_H(cjson_label);
 
-                if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                    params->labels[params->labels_count].zindex = cjson_zindex->valueint;
-                } else {
-                    params->labels[params->labels_count].zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-                }
+                params->labels[params->labels_count].zindex =
+                    CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
                 params->labels[params->labels_count].text       = cjson_text->valuestring;
                 params->labels[params->labels_count].enable     = cjson_enable->valueint;
@@ -790,7 +925,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         params->images_count = 0;
         params->images       = lv_malloc(sizeof(struct pgs_widgets_params_image) * count);
         if(!params->images) {
-            goto err8;
+            goto err_p_labels;
         }
 
         CJSON_PARSE_ARRAY_BEG(0, i, count)
@@ -807,11 +942,8 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_Y(cjson_image);
                 CJSON_PARSE_RADIUS(cjson_image);
 
-                if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                    params->images[params->images_count].zindex = cjson_zindex->valueint;
-                } else {
-                    params->images[params->images_count].zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-                }
+                params->images[params->images_count].zindex =
+                    CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
                 params->images[params->images_count].enable = cjson_enable->valueint;
                 params->images[params->images_count].align  = pgs_parse_align(cjson_align->valuestring);
@@ -836,7 +968,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         params->gifs_count = 0;
         params->gifs       = lv_malloc(sizeof(struct pgs_widgets_params_gif) * count);
         if(!params->gifs) {
-            goto err9;
+            goto err_p_images;
         }
 
         CJSON_PARSE_ARRAY_BEG(0, i, count)
@@ -853,11 +985,8 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_Y(cjson_gif);
                 CJSON_PARSE_RADIUS(cjson_gif);
 
-                if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                    params->gifs[params->gifs_count].zindex = cjson_zindex->valueint;
-                } else {
-                    params->gifs[params->gifs_count].zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-                }
+                params->gifs[params->gifs_count].zindex =
+                    CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
                 params->gifs[params->gifs_count].enable = cjson_enable->valueint;
                 params->gifs[params->gifs_count].align  = pgs_parse_align(cjson_align->valuestring);
@@ -881,7 +1010,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         params->videos_count = 0;
         params->videos       = lv_malloc(sizeof(struct pgs_widgets_params_video) * count);
         if(!params->videos) {
-            goto err10;
+            goto err_p_gifs;
         }
 
         CJSON_PARSE_ARRAY_BEG(0, i, count)
@@ -897,11 +1026,8 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_Y(cjson_video);
                 CJSON_PARSE_RADIUS(cjson_video);
 
-                if((cjson_zindex && cJSON_IsNumber(cjson_zindex))) {
-                    params->videos[params->videos_count].zindex = cjson_zindex->valueint;
-                } else {
-                    params->videos[params->videos_count].zindex = PGS_WIDGETS_ZINDEX_DEFAULT;
-                }
+                params->videos[params->videos_count].zindex =
+                    CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
 
                 params->videos[params->videos_count].enable = cjson_enable->valueint;
                 params->videos[params->videos_count].align  = pgs_parse_align(cjson_align->valuestring);
@@ -925,7 +1051,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                                 lv_free(params->videos[k].paths);
                             }
                         }
-                        goto err11;
+                        goto err_p_videos;
                     }
 
                     CJSON_PARSE_ARRAY_BEG(0, j, paths_count)
@@ -951,37 +1077,51 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
 
     return params;
 
-err11:
+err_p_videos:
     if(params->videos) lv_free(params->videos);
 
-err10:
+err_p_gifs:
     if(params->gifs) lv_free(params->gifs);
 
-err9:
+err_p_images:
     if(params->images) lv_free(params->images);
 
-err8:
+err_p_labels:
     if(params->labels) lv_free(params->labels);
 
-err7:
+err_p_wpmlabel:
     if(params->wpmlabel) lv_free(params->wpmlabel);
 
-err6:
+err_p_wpmchart:
     if(params->wpmchart) lv_free(params->wpmchart);
 
-err5:
+err_p_keysnd:
+    if(params->keysnd) lv_free(params->keysnd);
+
+err_p_waitanim:
+    if(params->keyanim && params->keyanim->waitanims) {
+        lv_free(params->keyanim->waitanims);
+    }
+
+err_p_keyanim:
+    if(params->keyanim) lv_free(params->keyanim);
+
+err_p_keyroll:
     if(params->keyroll) lv_free(params->keyroll);
 
-err4:
+err_p_states:
     if(params->states) lv_free(params->states);
 
-err3:
+err_malloc:
+    if(params->base_dynamic && params->base) {
+        free((void *)params->base);
+    }
     lv_free(params);
 
-err2:
+err_parse:
     cJSON_Delete(cjson_root);
 
-err1:
+err_message:
     lv_free(message);
 
     return NULL;
@@ -994,11 +1134,26 @@ void keyboard_params_delete(struct keyboard_params * params)
     }
     if(params->states) lv_free(params->states);
     if(params->keyroll) lv_free(params->keyroll);
+    if(params->keyanim && params->keyanim->waitanims) lv_free(params->keyanim->waitanims);
+    if(params->keyanim) lv_free(params->keyanim);
+    if(params->keysnd) lv_free(params->keysnd);
     if(params->wpmchart) lv_free(params->wpmchart);
     if(params->wpmlabel) lv_free(params->wpmlabel);
     if(params->labels) lv_free(params->labels);
     if(params->images) lv_free(params->images);
+    if(params->gifs) lv_free(params->gifs);
+    if(params->videos) {
+        for(uint32_t i = 0; i < params->videos_count; i++) {
+            if(params->videos[i].paths) {
+                lv_free(params->videos[i].paths);
+            }
+        }
+        lv_free(params->videos);
+    }
     if(params->cjson) cJSON_Delete(params->cjson);
+    if(params->base_dynamic && params->base) {
+        free((void *)params->base);
+    }
     lv_free(params);
 }
 

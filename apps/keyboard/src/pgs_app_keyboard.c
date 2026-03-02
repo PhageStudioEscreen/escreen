@@ -180,6 +180,8 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
 
     keyboard_inst.keyroll = pgs_widgets_keyroll_create(ui_container, params->base, params->keyroll);
 
+    keyboard_inst.keyanim = pgs_widgets_keyanim_create(ui_container, params->base, params->keyanim);
+
     keyboard_inst.macro =
         pgs_widgets_macro_create(ui_container, params->base, keyboard_params_state_get(params, PGS_WIDGETS_TYPE_MACRO),
                                  keyboard_params_state_get(params, PGS_WIDGETS_TYPE_MACRO1),
@@ -320,14 +322,19 @@ static void pgs_app_keyboard_hidraw_monitor_recv(void)
     } key;
 
     if(sizeof(key) == chry_ringbuffer_read(&hidraw_rxrb, &key, sizeof(key))) {
-        if(!keyboard_inst.keyroll || !keyboard_inst.keyroll->_keyroll->enable) {
-            return;
+        if(keyboard_inst.keyroll && keyboard_inst.keyroll->_keyroll->enable) {
+            if(key.pressed) {
+                pgs_widgets_keyroll_push(
+                    keyboard_inst.keyroll, key.keycode,
+                    keycap_color_random_with_coloration(keyboard_inst.keyroll->_keyroll->coloration)->index);
+            }
         }
 
-        if(key.pressed) {
-            pgs_widgets_keyroll_push(
-                keyboard_inst.keyroll, key.keycode,
-                keycap_color_random_with_coloration(keyboard_inst.keyroll->_keyroll->coloration)->index);
+        if(keyboard_inst.keyanim && keyboard_inst.keyanim->_keyanim->enable) {
+            if(key.pressed) {
+                pgs_widgets_keyanim_push(
+                    keyboard_inst.keyanim, key.keycode);
+            }
         }
     } else {
         printf("chry_ringbuffer_reset_read error, reset read\n");
