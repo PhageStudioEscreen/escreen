@@ -99,7 +99,7 @@ int main(void)
     } else {
         const char *mp3_path = getenv("PGS_MP3_PATH");
         if (!mp3_path || !*mp3_path)
-            mp3_path = "/usr/share/pgs/apps/helloworld/test.mp3";
+            mp3_path = "/usr/share/pgs/apps/helloworld/resources/music.mp3";
         audio_player_start(mp3_path);
     }
 

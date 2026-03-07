@@ -1,0 +1,65 @@
+{
+    "states": [
+        {
+            "name": "bat",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 408,
+            "y": 0
+        }
+    ],
+    "keyanim": {
+        "path": "",
+        "suffix": ".png",
+        "enable": true,
+        "align": "default",
+        "anim": "fade",
+        "color": "FFFFFFFF",
+        "x": 195,
+        "y": -95,
+        "radius": 0,
+        "duration": 0,
+        "waitanims": [
+            {
+                "path": "wait0.png",
+                "enable": true,
+                "x": 0,
+                "y": 0,
+                "radius": 0,
+                "group": 0
+            },
+            {
+                "path": "pop0.png",
+                "enable": true,
+                "x": -230,
+                "y": 95,
+                "radius": 0,
+                "group": 0
+            }
+        ]
+    },
+    "images": [
+        {
+            "path": "bg.png",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 0,
+            "y": 0,
+            "radius": 0
+        },
+        {
+            "path": "keyboard_bottom.png",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 195,
+            "y": -95,
+            "radius": 0
+        }
+    ]
+}

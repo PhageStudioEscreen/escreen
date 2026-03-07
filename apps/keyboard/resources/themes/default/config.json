@@ -1,0 +1,232 @@
+{
+    "states": [
+        {
+            "name": "macro",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 6,
+            "y": 6
+        },
+        {
+            "name": "macro1",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 27,
+            "y": 7
+        },
+        {
+            "name": "macro2",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 27,
+            "y": 24
+        },
+        {
+            "name": "layer",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 42,
+            "y": 6
+        },
+        {
+            "name": "capslock",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 78,
+            "y": 6
+        },
+        {
+            "name": "numlock",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 114,
+            "y": 6
+        },
+        {
+            "name": "ble1",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 326,
+            "y": 6
+        },
+        {
+            "name": "ble2",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 362,
+            "y": 6
+        },
+        {
+            "name": "ble3",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 398,
+            "y": 6
+        },
+        {
+            "name": "2g4",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 434,
+            "y": 6
+        },
+        {
+            "name": "usb",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 470,
+            "y": 6
+        },
+        {
+            "name": "bat",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 506,
+            "y": 6
+        }
+    ],
+    "keyroll": {
+        "enable": true,
+        "align": "default",
+        "anim": "fade",
+        "color": "FFFFFFFF",
+        "coloration": "B",
+        "x": 12,
+        "y": 48,
+        "n": 2
+    },
+    "wpmchart": {
+        "enable": false,
+        "align": "default",
+        "anim": "fade",
+        "color": "FFFF6086",
+        "x": 324,
+        "y": 48,
+        "w": 200,
+        "h": 144
+    },
+    "wpmlabel": {
+        "enable": true,
+        "align": "default",
+        "text-align": "right",
+        "anim": "fade",
+        "color": "FFFF6086",
+        "font": "helveticarounded_20",
+        "x": 364,
+        "y": 211,
+        "w": 48,
+        "h": 24
+    },
+    "labels": [
+        {
+            "text": "ARK COLORS 104%",
+            "enable": true,
+            "align": "default",
+            "text-align": "center",
+            "anim": "fade",
+            "color": "FF60C5FF",
+            "font": "helveticarounded_20",
+            "x": 59,
+            "y": 211,
+            "w": 201,
+            "h": 24
+        },
+                {
+            "text": "WPM",
+            "enable": true,
+            "align": "default",
+            "text-align": "left",
+            "anim": "fade",
+            "color": "FFFF6086",
+            "font": "helveticarounded_20",
+            "x": 418,
+            "y": 211,
+            "w": 64,
+            "h": 24
+        }
+    ],
+    "images": [
+        {
+            "path": "images/bar_name_left.png",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 70,
+            "y": 219,
+            "radius": 0
+        },
+        {
+            "path": "images/bar_name_right.png",
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 365,
+            "y": 219,
+            "radius": 0
+        }
+    ],
+    "gifs": [
+        {
+            "path": "gifs/auska.gif",
+            "enable": false,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 0,
+            "y": 0,
+            "radius": 0
+        }
+    ],
+    "videos": [
+        {
+            "paths": [
+                "videos/wave.mp4"
+            ],
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 144,
+            "y": 0,
+            "radius": 0
+        },
+                {
+            "paths": [
+                "videos/oscmusic.mp4"
+            ],
+            "enable": true,
+            "align": "default",
+            "anim": "fade",
+            "color": "FFFFFFFF",
+            "x": 324,
+            "y": 48,
+            "radius": 0
+        }
+    ]
+}

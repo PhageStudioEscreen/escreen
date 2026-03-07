@@ -13,6 +13,7 @@ WARNINGS		:= -Wall -Wshadow -Wundef -Wmissing-prototypes -Wno-discarded-qualifie
 					-Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body \
 					-Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -std=gnu99
 CFLAGS			?= -O3 -g0 -I$(PGS_ESCREEN_DIR)/ \
+					-I$(STAGING_DIR)/usr/include/freetype2 \
 					-I$(STAGING_DIR)/usr/include/libdrm \
 					-I$(STAGING_DIR)/usr/include/libkms \
 					-I$(STAGING_DIR)/usr/include/cjson \
@@ -20,7 +21,7 @@ CFLAGS			?= -O3 -g0 -I$(PGS_ESCREEN_DIR)/ \
 					-I$(STAGING_DIR)/usr/include/dbus-1.0/ \
 					-I$(STAGING_DIR)/usr/lib/dbus-1.0/include \
 					-I$(STAGING_DIR)/usr/include $(WARNINGS)
-LDFLAGS			?= -lm -lz -L$(STAGING_DIR)/usr/lib -ldrm -linput -lxkbcommon -lavformat -lavcodec -lavutil -lswscale -lpthread -ldbus-1 -lpng -ljpeg -lcjson
+LDFLAGS			?= -lm -lz -L$(STAGING_DIR)/usr/lib -ldrm -linput -lxkbcommon -lavformat -lavcodec -lavutil -lswscale -lpthread -ldbus-1 -lpng -ljpeg -lcjson -lfreetype
 
 include $(PGS_ESCREEN_DIR)/lvgl/lvgl.mk
 include $(PGS_ESCREEN_DIR)/modules/modules.mk
@@ -35,7 +36,7 @@ CURRENT 		= $(CURDIR)
 BUILD_DIR 		= $(CURDIR)/build
 BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
 
-SUBDIRS ?= apps/menu apps/helloworld apps/benchmark apps/keyboard
+SUBDIRS ?= apps/menu apps/helloworld apps/keyboard apps/setting
 
 export CC CFLAGS LDFLAGS OBJEXT ASRCS CSRCS AOBJS COBJS BUILD_DIR BUILD_BIN_DIR CURRENT
 
@@ -56,22 +57,26 @@ install:
 	@install -d $(TARGET_DIR)$(sharedir)/X11
 	@install -d $(TARGET_DIR)$(sharedir)/pgs
 	@install -d $(TARGET_DIR)$(sharedir)/pgs/menu
+	@install -d $(TARGET_DIR)$(sharedir)/pgs/menu/resources
 	@install -d $(TARGET_DIR)$(sharedir)/pgs/apps
 	@install -d $(TARGET_DIR)$(sharedir)/dbus-1/services
 	@for file in $(BUILD_BIN_DIR)/*; do \
 	 	filename=$$(basename $$file | sed 's/^pgs_//'); \
 	 	if [ "$$filename" != "menu" ]; then \
 	 		install -d $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename; \
-			cp $(PGS_ESCREEN_DIR)/apps/$$filename/icon.png $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/icon.png; \
+			install -d $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/resources; \
+			cp $(PGS_ESCREEN_DIR)/apps/$$filename/base/icon.png $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/icon.png; \
+			cp $(PGS_ESCREEN_DIR)/apps/$$filename/base/info.json $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/info.json; \
+			cp -r $(PGS_ESCREEN_DIR)/apps/$$filename/resources/. $(TARGET_DIR)$(sharedir)/pgs/apps/$$filename/resources; \
+			cp $(PGS_ESCREEN_DIR)/apps/$$filename/base/com.pgsapp.$$filename.service $(TARGET_DIR)$(sharedir)/dbus-1/services/com.pgsapp.$$filename.service; \
 	 	fi; \
 	 	install $$file $(TARGET_DIR)$(bindir)/; \
 	done
 	@cp -r $(PGS_ESCREEN_DIR)/xkb $(TARGET_DIR)$(sharedir)/X11
-	@cp -r $(PGS_ESCREEN_DIR)/services/* $(TARGET_DIR)$(sharedir)/dbus-1/services
-	@install -d $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
-	@cp -r $(PGS_ESCREEN_DIR)/apps/keyboard/themes $(TARGET_DIR)$(sharedir)/pgs/apps/keyboard
-	@cp $(PGS_ESCREEN_DIR)/apps/helloworld/test.mp3 $(TARGET_DIR)$(sharedir)/pgs/apps/helloworld/test.mp3
-	@cp $(PGS_ESCREEN_DIR)/apps/menu/assets/current $(TARGET_DIR)$(sharedir)/pgs/menu/current
+	@cp    $(PGS_ESCREEN_DIR)/apps/menu/base/icon.png $(TARGET_DIR)$(sharedir)/pgs/menu/icon.png; 
+	@cp    $(PGS_ESCREEN_DIR)/apps/menu/base/info.json $(TARGET_DIR)$(sharedir)/pgs/menu/info.json; 
+	@cp -r $(PGS_ESCREEN_DIR)/apps/menu/resources/. $(TARGET_DIR)$(sharedir)/pgs/menu/resources; 
+	@cp    $(PGS_ESCREEN_DIR)/apps/menu/base/com.pgsapp.menu.service $(TARGET_DIR)$(sharedir)/dbus-1/services/com.pgsapp.menu.service; 
 
 .PHONY: uninstall
 uninstall:

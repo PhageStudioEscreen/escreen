@@ -24,6 +24,12 @@ LV_FONT_DECLARE(lv_font_helveticarounded_28);
 LV_FONT_DECLARE(lv_font_helveticarounded_30);
 LV_FONT_DECLARE(lv_font_helveticarounded_32);
 
+extern lv_font_t * base_font_14;
+extern lv_font_t * base_font_16;
+extern lv_font_t * base_font_18;
+extern lv_font_t * base_font_20;
+extern lv_font_t * base_font_24;
+
 void pgs_lvgl_init(const char * name);
 const char * pgs_get_name(void);
 const char * pgs_get_path(void);

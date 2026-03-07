@@ -1,0 +1,11 @@
+{
+  "name": {
+    "en": "keyboard",
+    "zh-cn": "键盘主题"
+  },
+  "index": 0,
+  "author": "egahp",
+  "version": "0.1.0",
+  "package": "com.pgsapp.keyboard.service",
+  "paths": ["/usr/bin/pgs_keyboard", "/usr/share/pgs/apps/keyboard"]
+}

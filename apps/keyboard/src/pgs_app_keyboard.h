@@ -6,6 +6,8 @@
 #include "pgs_widgets.h"
 #include "keyboard_hidraw.h"
 
+#define RESOURCES_PATH_PREFIX "/usr/share/pgs/apps/keyboard/resources/"
+
 struct pgs_app_keyboard
 {
     struct pgs_widgets_macro * macro;

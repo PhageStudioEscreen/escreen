@@ -17,7 +17,7 @@ static lv_obj_t * ui_container;
 static lv_group_t * ui_group;
 static void (*ui_key_cb)(uint32_t keycode);
 char keyboard_path_buffer[PATH_MAX];
-static const char * input_file = "/usr/share/pgs/apps/keyboard/themes/current";
+static const char * input_file = RESOURCES_PATH_PREFIX "themes/current";
 
 struct pgs_app_keyboard keyboard_inst;
 
@@ -74,7 +74,7 @@ static void theme_event_cb(lv_event_t * event)
         lv_label_set_text(text, "Exit to apply new theme");
         lv_obj_set_style_text_color(text, lv_color_hex(0xF0F0F0), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_opa(text, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_font(text, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(text, base_font_16, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(text, LV_LABEL_LONG_SCROLL_CIRCULAR);
         pgs_cleanup_reboot();
         return;
@@ -85,6 +85,7 @@ static char full_path[PATH_MAX];
 
 static void theme_find(const char * dir_path)
 {
+    static uint16_t count = 0;
     DIR * dir;
     struct dirent * entry;
     struct stat statbuf;
@@ -108,7 +109,8 @@ static void theme_find(const char * dir_path)
             if(name == NULL) {
                 continue;
             }
-            lv_snprintf(name, 32, "THEME %s", entry->d_name);
+            count++;
+            lv_snprintf(name, 32, "%3d %s", count, entry->d_name);
             pgs_backlist_add_item(name, &icon_theme, theme_event_cb, strdup(full_path));
         }
     }
@@ -131,7 +133,7 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
     lv_obj_add_event_cb(ui_container, key_event_cb, LV_EVENT_KEY, NULL);
     lv_obj_clear_flag(ui_container, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
-    theme_find("/usr/share/pgs/apps/keyboard/themes");
+    theme_find(RESOURCES_PATH_PREFIX "themes");
     theme_find("/root/themes");
 
     const char * config_json = NULL;
@@ -154,14 +156,14 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
     } while(0);
 
     if(!config_json) {
-        config_json = "/usr/share/pgs/apps/keyboard/themes/default/config.json";
+        config_json = RESOURCES_PATH_PREFIX "themes/default/config.json";
     }
 
     struct keyboard_params * params = keyboard_params_parse(config_json);
     if(!params) {
         lv_obj_t * label = lv_label_create(ui_container);
         lv_label_set_text_fmt(label, "Unable to parse config file\n%s", config_json);
-        lv_obj_set_style_text_font(label, &lv_font_helveticarounded_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(label, base_font_24, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_align(ui_container, LV_ALIGN_CENTER);
         lv_obj_set_style_text_color(lv_screen_active(), lv_color_hex(0xffffff), LV_PART_MAIN);
         lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x000000), LV_PART_MAIN);
@@ -332,8 +334,7 @@ static void pgs_app_keyboard_hidraw_monitor_recv(void)
 
         if(keyboard_inst.keyanim && keyboard_inst.keyanim->_keyanim->enable) {
             if(key.pressed) {
-                pgs_widgets_keyanim_push(
-                    keyboard_inst.keyanim, key.keycode);
+                pgs_widgets_keyanim_push(keyboard_inst.keyanim, key.keycode);
             }
         }
     } else {

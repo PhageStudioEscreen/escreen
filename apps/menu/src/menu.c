@@ -22,7 +22,7 @@ static lv_obj_t * ui_label_app;
 static lv_group_t * ui_group;
 static void (*ui_key_cb)(uint32_t keycode);
 
-static const char * input_file = "/usr/share/pgs/menu/current";
+static const char * input_file = "/usr/share/pgs/menu/resources/current";
 
 static struct _pgs_list global_list;
 
@@ -212,7 +212,7 @@ lv_obj_t * pgs_apps_menu_init(lv_obj_t * obj, lv_group_t * group, void (*key_cb)
     lv_label_set_text(ui_label_app, "???");
     lv_obj_set_style_text_color(ui_label_app, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui_label_app, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_label_app, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_label_app, base_font_20, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_container_apps = lv_obj_create(ui_container);
     lv_obj_set_width(ui_container_apps, 536);

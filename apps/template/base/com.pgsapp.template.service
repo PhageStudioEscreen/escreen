@@ -1,0 +1,5 @@
+[D-BUS Service]
+
+Name=com.pgsapp.template
+
+Exec=/usr/bin/pgs_template

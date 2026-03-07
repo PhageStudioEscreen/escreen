@@ -66,6 +66,55 @@ static void lv_linux_input_init(void)
     }
 }
 
+lv_font_t * base_font_14;
+lv_font_t * base_font_16;
+lv_font_t * base_font_18;
+lv_font_t * base_font_20;
+lv_font_t * base_font_24;
+
+static void lv_font_init(void)
+{
+    base_font_14 = lv_freetype_font_create("/usr/share/pgs/menu/resources/OPPOSans-M.ttf",
+                                           LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 14, LV_FREETYPE_FONT_STYLE_BOLD);
+
+    if(!base_font_14) {
+        LV_LOG_ERROR("freetype font create failed.");
+        base_font_14 = &lv_font_helveticarounded_14;
+    }
+
+    base_font_16 = lv_freetype_font_create("/usr/share/pgs/menu/resources/OPPOSans-M.ttf",
+                                           LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 16, LV_FREETYPE_FONT_STYLE_BOLD);
+
+    if(!base_font_16) {
+        LV_LOG_ERROR("freetype font create failed.");
+        base_font_16 = &lv_font_helveticarounded_16;
+    }
+
+    base_font_18 = lv_freetype_font_create("/usr/share/pgs/menu/resources/OPPOSans-M.ttf",
+                                           LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 18, LV_FREETYPE_FONT_STYLE_BOLD);
+
+    if(!base_font_18) {
+        LV_LOG_ERROR("freetype font create failed.");
+        base_font_18 = &lv_font_helveticarounded_18;
+    }
+
+    base_font_20 = lv_freetype_font_create("/usr/share/pgs/menu/resources/OPPOSans-M.ttf",
+                                           LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 20, LV_FREETYPE_FONT_STYLE_BOLD);
+
+    if(!base_font_20) {
+        LV_LOG_ERROR("freetype font create failed.");
+        base_font_20 = &lv_font_helveticarounded_20;
+    }
+
+    base_font_24 = lv_freetype_font_create("/usr/share/pgs/menu/resources/OPPOSans-M.ttf",
+                                           LV_FREETYPE_FONT_RENDER_MODE_BITMAP, 24, LV_FREETYPE_FONT_STYLE_BOLD);
+
+    if(!base_font_24) {
+        LV_LOG_ERROR("freetype font create failed.");
+        base_font_24 = &lv_font_helveticarounded_24;
+    }
+}
+
 static char pgs_name[128];
 static char pgs_path[128];
 
@@ -107,7 +156,7 @@ void pgs_cleanup_reboot(void)
 
 void pgs_cleanup(void)
 {
-    system("rm -rf /usr/share/pgs/menu/current");
+    system("rm -rf /usr/share/pgs/menu/resources/current");
 
     pgs_cleanup_reboot();
 }
@@ -128,7 +177,7 @@ static void redirection_signal(void)
 
 void pgs_lvgl_init(const char * name)
 {
-    redirection_ttyFIQ0();
+    // redirection_ttyFIQ0();
 
     /* if not menu, register exit callback */
     if(strncmp(name, PGS_DBUS_MENU, sizeof(PGS_DBUS_MENU - 1))) {
@@ -156,6 +205,7 @@ void pgs_lvgl_init(const char * name)
 
     lv_linux_disp_init();
     lv_linux_input_init();
+    lv_font_init();
 }
 
 void pgs_lvgl_resume(void)

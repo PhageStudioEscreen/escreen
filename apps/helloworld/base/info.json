@@ -1,0 +1,11 @@
+{
+  "name": {
+    "en": "helloworld",
+    "zh-cn": "你好世界"
+  },
+  "index": 0,
+  "author": "egahp",
+  "version": "0.1.0",
+  "package": "com.pgsapp.helloworld.service",
+  "paths": ["/usr/bin/pgs_helloworld", "/usr/share/pgs/apps/helloworld"]
+}

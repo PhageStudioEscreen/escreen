@@ -245,7 +245,7 @@ void pgs_apps_menu_init(lv_obj_t * obj)
     lv_label_set_text(ui_lable_app, "???");
     lv_obj_set_style_text_color(ui_lable_app, lv_color_hex(0x606060), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui_lable_app, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_lable_app, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_lable_app, base_font, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_container_apps = lv_obj_create(ui_container);
     lv_obj_set_width(ui_container_apps, 320);
