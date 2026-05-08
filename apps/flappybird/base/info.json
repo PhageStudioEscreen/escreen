@@ -1,0 +1,11 @@
+{
+  "name": {
+    "en": "flappybird",
+    "zh-cn": "飞扬的小鸟"
+  },
+  "index": 4,
+  "author": "jq",
+  "version": "0.1.0",
+  "package": "com.pgsapp.flappybird.service",
+  "paths": ["/usr/bin/pgs_flappybird", "/usr/share/pgs/apps/flappybird"]
+}

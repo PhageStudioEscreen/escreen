@@ -1,0 +1,9 @@
+#ifndef LV_CONF_SELF_H
+#define LV_CONF_SELF_H
+
+#define LV_USE_100ASK_NES 1
+#define LV_100ASK_NES_PLATFORM_POSIX 1
+
+#define LV_USE_SYSMON 1
+
+#endif

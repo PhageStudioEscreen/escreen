@@ -1,0 +1,11 @@
+{
+  "name": {
+    "en": "sushi",
+    "zh-cn": "魔法寿司"
+  },
+  "index": 5,
+  "author": "jq",
+  "version": "0.1.0",
+  "package": "com.pgsapp.sushi.service",
+  "paths": ["/usr/bin/pgs_sushi", "/usr/share/pgs/apps/sushi"]
+}

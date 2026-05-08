@@ -1,0 +1,11 @@
+{
+  "name": {
+    "en": "NES",
+    "zh-cn": "NES"
+  },
+  "index": 6,
+  "author": "jq",
+  "version": "0.1.0",
+  "package": "com.pgsapp.nes.service",
+  "paths": ["/usr/bin/pgs_nes", "/usr/share/pgs/apps/nes"]
+}
