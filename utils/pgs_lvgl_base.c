@@ -7,12 +7,107 @@
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
+#include "cJSON.h"
 #include "pgs_modules.h"
 #include "pgs_utils.h"
+
+#define PGS_MENU_CONFIG_PATH "/usr/share/pgs/menu/resources/config.json"
+
+char * read_text_file(const char * path)
+{
+    FILE * file = fopen(path, "rb");
+    long size;
+    char * buffer;
+
+    if(file == NULL) {
+        return NULL;
+    }
+
+    if(fseek(file, 0, SEEK_END) != 0) {
+        fclose(file);
+        return NULL;
+    }
+
+    size = ftell(file);
+    if(size < 0) {
+        fclose(file);
+        return NULL;
+    }
+
+    if(fseek(file, 0, SEEK_SET) != 0) {
+        fclose(file);
+        return NULL;
+    }
+
+    buffer = malloc((size_t)size + 1);
+    if(buffer == NULL) {
+        fclose(file);
+        return NULL;
+    }
+
+    if(size > 0 && fread(buffer, 1, (size_t)size, file) != (size_t)size) {
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    buffer[size] = '\0';
+    fclose(file);
+
+    return buffer;
+}
+
+bool write_text_file(const char * path, const char * content)
+{
+    FILE * file = fopen(path, "wb");
+
+    if(file == NULL) {
+        return false;
+    }
+
+    if(fputs(content, file) == EOF) {
+        fclose(file);
+        return false;
+    }
+
+    fclose(file);
+    return true;
+}
 
 static const char * getenv_default(const char * name, const char * dflt)
 {
     return getenv(name) ?: dflt;
+}
+
+static void pgs_menu_clear_current(void)
+{
+    char * content = NULL;
+    cJSON * root = NULL;
+
+    content = read_text_file(PGS_MENU_CONFIG_PATH);
+    if(content != NULL) {
+        root = cJSON_Parse(content);
+    }
+
+    if(root == NULL) {
+        root = cJSON_CreateObject();
+    }
+    if(root == NULL) {
+        free(content);
+        return;
+    }
+
+    cJSON_DeleteItemFromObject(root, "current");
+    cJSON_AddStringToObject(root, "current", "");
+
+    char * output = cJSON_Print(root);
+    if(output != NULL) {
+        write_text_file(PGS_MENU_CONFIG_PATH, output);
+        cJSON_free(output);
+    }
+
+    cJSON_Delete(root);
+    free(content);
 }
 
 static lv_display_t * display;
@@ -156,7 +251,7 @@ void pgs_cleanup_reboot(void)
 
 void pgs_cleanup(void)
 {
-    system("rm -rf /usr/share/pgs/menu/resources/current");
+    pgs_menu_clear_current();
 
     pgs_cleanup_reboot();
 }

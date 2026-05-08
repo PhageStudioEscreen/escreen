@@ -3,7 +3,7 @@
     "en": "keyboard",
     "zh-cn": "键盘主题"
   },
-  "index": 0,
+  "index": 1,
   "author": "egahp",
   "version": "0.1.0",
   "package": "com.pgsapp.keyboard.service",

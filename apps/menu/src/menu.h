@@ -8,6 +8,7 @@
 struct pgs_application
 {
     struct _pgs_list list;
+    const char * id;
     const char * name;
     const char * path;
     lv_obj_t * button;

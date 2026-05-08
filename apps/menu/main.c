@@ -27,7 +27,7 @@ static void fastboot_event_cb(lv_event_t * event)
     lv_event_code_t code = lv_event_get_code(event);
 
     if(code == LV_EVENT_CLICKED) {
-        syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, "fastboot");
+        syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, "loader");
     }
 }
 
@@ -64,7 +64,7 @@ int main(void)
     pgs_backlist_add_item("REBOOT", &icont_reboot, reboot_event_cb, NULL);
 
     LV_IMG_DECLARE(icont_fastboot);
-    pgs_backlist_add_item("FASTBOOT", &icont_fastboot, fastboot_event_cb, NULL);
+    pgs_backlist_add_item("LOADER", &icont_fastboot, fastboot_event_cb, NULL);
 
     lv_indev_set_group(pgs_get_keyboard(), gmain);
     pgs_backlist_hidden(true, true);

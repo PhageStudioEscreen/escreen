@@ -36,7 +36,7 @@ CURRENT 		= $(CURDIR)
 BUILD_DIR 		= $(CURDIR)/build
 BUILD_BIN_DIR 	= $(BUILD_DIR)/bin
 
-SUBDIRS ?= apps/menu apps/helloworld apps/keyboard apps/setting
+SUBDIRS ?= apps/menu apps/helloworld apps/keyboard apps/setting apps/flappybird apps/sushi apps/nes
 
 export CC CFLAGS LDFLAGS OBJEXT ASRCS CSRCS AOBJS COBJS BUILD_DIR BUILD_BIN_DIR CURRENT
 

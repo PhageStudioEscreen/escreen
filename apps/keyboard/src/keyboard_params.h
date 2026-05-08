@@ -308,6 +308,12 @@ struct keyboard_params
     void * cjson;
 };
 
+enum escreen_power_state {
+    ESCREEN_POWER_STATE_ACTIVE   = 0,
+    ESCREEN_POWER_STATE_SUSPEND  = 1,
+    ESCREEN_POWER_STATE_SHUTDOWN = 2,
+};
+
 void keyboard_params_delete(struct keyboard_params * params);
 struct keyboard_params * keyboard_params_parse(const char * json_path);
 struct pgs_widgets_params_state * keyboard_params_state_get(struct keyboard_params * params, uint8_t type);

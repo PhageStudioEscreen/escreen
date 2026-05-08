@@ -3,7 +3,7 @@
     "en": "setting",
     "zh-cn": "设置"
   },
-  "index": 0,
+  "index": 3,
   "author": "egahp",
   "version": "0.1.0",
   "package": "com.pgsapp.setting.service",

@@ -30,6 +30,9 @@ extern lv_font_t * base_font_18;
 extern lv_font_t * base_font_20;
 extern lv_font_t * base_font_24;
 
+char * read_text_file(const char * path);
+bool write_text_file(const char * path, const char * content);
+
 void pgs_lvgl_init(const char * name);
 const char * pgs_get_name(void);
 const char * pgs_get_path(void);

@@ -134,7 +134,7 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
     lv_obj_clear_flag(ui_container, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
     theme_find(RESOURCES_PATH_PREFIX "themes");
-    theme_find("/root/themes");
+    theme_find("/userdata/themes");
 
     const char * config_json = NULL;
     do {
@@ -296,7 +296,7 @@ static void pgs_app_keyboard_hidraw_escreen_recv(void)
             }
 
             case id_scr_get_sleep: {
-                if(data[0] || data[1]) {
+                if(data[0] != ESCREEN_POWER_STATE_ACTIVE) {
                     system("echo 0 > /sys/class/backlight/panel-backlight/brightness");
                 } else {
                     system("echo 1 > /sys/class/backlight/panel-backlight/brightness");
