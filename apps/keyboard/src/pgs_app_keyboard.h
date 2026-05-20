@@ -24,6 +24,11 @@ struct pgs_app_keyboard
     struct pgs_widgets_keyroll * keyroll;
     struct pgs_widgets_keyanim * keyanim;
     struct pgs_widgets_keysnd * keysnd;
+    uint8_t keybeep_enable;
+    uint8_t keybeep_mode;
+    const char * keybeep_path;
+    uint8_t keytone_enable;
+    const char * keytone_base;
     struct pgs_widgets_wpmchart * wpmchart;
     struct pgs_widgets_wpmlabel * wpmlabel;
     struct pgs_widgets_labels * labels;

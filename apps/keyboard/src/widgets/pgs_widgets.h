@@ -16,6 +16,7 @@
 #include "keyboard_params.h"
 #include "keycode_params.h"
 #include "keycap_colors.h"
+#include "audio_player.h"
 
 extern char keyboard_path_buffer[PATH_MAX];
 
@@ -152,6 +153,9 @@ struct pgs_widgets_videos
     uint32_t * index;
     uint32_t * path_count;
     lv_obj_t ** videos;
+    audio_player_handle * audio_players;
+    lv_timer_t * sync_timer;
+    void * event_ctx;
 };
 
 struct pgs_widgets_macro * pgs_widgets_macro_create(lv_obj_t * obj, const char * base,

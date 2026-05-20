@@ -267,12 +267,25 @@ struct pgs_widgets_params_gif
     const char * path;
 };
 
+struct pgs_widgets_params_keybeep
+{
+    uint8_t enable;
+    uint8_t mode;
+    const char * path;
+};
+
+struct pgs_widgets_params_keytone
+{
+    uint8_t enable;
+};
+
 struct pgs_widgets_params_video
 {
     uint8_t enable;
     uint8_t align;
     uint8_t anim;
     uint8_t opa;
+    uint8_t audio;
     uint16_t zindex;
 
     int32_t radius;
@@ -304,6 +317,8 @@ struct keyboard_params
     struct pgs_widgets_params_image * images;
     struct pgs_widgets_params_gif * gifs;
     struct pgs_widgets_params_video * videos;
+    struct pgs_widgets_params_keybeep * keybeep;
+    struct pgs_widgets_params_keytone * keytone;
 
     void * cjson;
 };
