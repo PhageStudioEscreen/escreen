@@ -113,6 +113,13 @@
         continue;                                                                                                      \
     }
 
+#define CJSON_PARSE_AUDIO(cjson_obj)                                                                                   \
+    cJSON * cjson_audio = cJSON_GetObjectItem(cjson_obj, "audio");                                                     \
+    if(cjson_audio && cJSON_IsBool(cjson_audio)) {                                                                     \
+    } else {                                                                                                           \
+        cjson_audio = NULL;                                                                                            \
+    }
+
 #define CJSON_PARSE_SUFFIX(cjson_obj)                                                                                  \
     cJSON * cjson_suffix = cJSON_GetObjectItem(cjson_obj, "suffix");                                                   \
     if(!(cjson_suffix && cJSON_IsString(cjson_suffix))) {                                                              \
@@ -1025,6 +1032,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 CJSON_PARSE_X(cjson_video);
                 CJSON_PARSE_Y(cjson_video);
                 CJSON_PARSE_RADIUS(cjson_video);
+                CJSON_PARSE_AUDIO(cjson_video);
 
                 params->videos[params->videos_count].zindex =
                     CJSON_CHECK_ZINDEX(cjson_zindex) ? cjson_zindex->valueint : PGS_WIDGETS_ZINDEX_DEFAULT;
@@ -1037,6 +1045,7 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
                 params->videos[params->videos_count].x      = cjson_x->valueint;
                 params->videos[params->videos_count].y      = cjson_y->valueint;
                 params->videos[params->videos_count].radius = cjson_radius->valueint;
+                params->videos[params->videos_count].audio  = cjson_audio ? cjson_audio->valueint : 0;
                 params->videos[params->videos_count].count  = 0;
 
                 cJSON * cjson_paths = NULL;
@@ -1073,9 +1082,70 @@ struct keyboard_params * keyboard_params_parse(const char * json_path)
         CJSON_PARSE_ARRAY_END;
     }
 
+    /* keybeep */
+    cJSON * cjson_keybeep = NULL;
+    cjson_keybeep         = cJSON_GetObjectItem(cjson_root, "keybeep");
+    if(cjson_keybeep && cJSON_IsArray(cjson_keybeep)) {
+        int count = cJSON_GetArraySize(cjson_keybeep);
+        if(count > 0) {
+            cJSON * cjson_item = cJSON_GetArrayItem(cjson_keybeep, 0);
+            if(cjson_item && cJSON_IsObject(cjson_item)) {
+                CJSON_PARSE_BEG
+                {
+                    CJSON_PARSE_ENABLE(cjson_item);
+
+                    cJSON * cjson_mode = cJSON_GetObjectItem(cjson_item, "mode");
+                    cJSON * cjson_path = cJSON_GetObjectItem(cjson_item, "path");
+
+                    params->keybeep = lv_malloc(sizeof(struct pgs_widgets_params_keybeep));
+                    if(!params->keybeep) {
+                        goto err_p_keybeep;
+                    }
+
+                    params->keybeep->enable = cjson_enable->valueint;
+                    params->keybeep->mode = cjson_mode && cJSON_IsString(cjson_mode) ?
+                        (strcmp(cjson_mode->valuestring, "file") == 0 ? 1 : 0) : 0;
+                    params->keybeep->path = cjson_path && cJSON_IsString(cjson_path) ?
+                        cjson_path->valuestring : NULL;
+                }
+                CJSON_PARSE_END;
+            }
+        }
+    }
+
+    /* keytone */
+    cJSON * cjson_keytone = NULL;
+    cjson_keytone         = cJSON_GetObjectItem(cjson_root, "keytone");
+    if(cjson_keytone && cJSON_IsArray(cjson_keytone)) {
+        int count = cJSON_GetArraySize(cjson_keytone);
+        if(count > 0) {
+            cJSON * cjson_item = cJSON_GetArrayItem(cjson_keytone, 0);
+            if(cjson_item && cJSON_IsObject(cjson_item)) {
+                CJSON_PARSE_BEG
+                {
+                    CJSON_PARSE_ENABLE(cjson_item);
+
+                    params->keytone = lv_malloc(sizeof(struct pgs_widgets_params_keytone));
+                    if(!params->keytone) {
+                        goto err_p_keytone;
+                    }
+
+                    params->keytone->enable = cjson_enable->valueint;
+                }
+                CJSON_PARSE_END;
+            }
+        }
+    }
+
     lv_free(message);
 
     return params;
+
+err_p_keytone:
+    if(params->keytone) lv_free(params->keytone);
+
+err_p_keybeep:
+    if(params->keybeep) lv_free(params->keybeep);
 
 err_p_videos:
     if(params->videos) lv_free(params->videos);
@@ -1137,6 +1207,8 @@ void keyboard_params_delete(struct keyboard_params * params)
     if(params->keyanim && params->keyanim->waitanims) lv_free(params->keyanim->waitanims);
     if(params->keyanim) lv_free(params->keyanim);
     if(params->keysnd) lv_free(params->keysnd);
+    if(params->keybeep) lv_free(params->keybeep);
+    if(params->keytone) lv_free(params->keytone);
     if(params->wpmchart) lv_free(params->wpmchart);
     if(params->wpmlabel) lv_free(params->wpmlabel);
     if(params->labels) lv_free(params->labels);

@@ -1,6 +1,6 @@
 [submodule "lvgl"]
 	path = lvgl
-	url = https://github.com/PhageStudioEscreen/lvgl.git
+	url = https://github.com/JQ32309959/lvgl.git
 	branch = release/v9.2
 [submodule "modules/cherryrb"]
 	path = modules/cherryrb

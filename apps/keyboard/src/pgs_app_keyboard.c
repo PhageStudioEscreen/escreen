@@ -12,6 +12,7 @@
 #include "pgs_app_keyboard.h"
 #include "keycode_params.h"
 #include "keycap_colors.h"
+#include "audio_player.h"
 
 static lv_obj_t * ui_container;
 static lv_group_t * ui_group;
@@ -184,6 +185,25 @@ lv_obj_t * pgs_app_keyboard_init(lv_obj_t * obj, lv_group_t * group, void (*key_
 
     keyboard_inst.keyanim = pgs_widgets_keyanim_create(ui_container, params->base, params->keyanim);
 
+    keyboard_inst.keybeep_enable = params->keybeep ? params->keybeep->enable : 0;
+    keyboard_inst.keybeep_mode = params->keybeep ? params->keybeep->mode : 0;
+    if(params->keybeep && params->keybeep->path) {
+        static char keybeep_full_path[256];
+        snprintf(keybeep_full_path, sizeof(keybeep_full_path), "%s/%s", params->base, params->keybeep->path);
+        keyboard_inst.keybeep_path = keybeep_full_path;
+    } else {
+        keyboard_inst.keybeep_path = NULL;
+    }
+
+    keyboard_inst.keytone_enable = params->keytone ? params->keytone->enable : 0;
+    if(params->keytone && params->keytone->enable) {
+        static char keytone_base_path[256];
+        snprintf(keytone_base_path, sizeof(keytone_base_path), "%s/tones", params->base);
+        keyboard_inst.keytone_base = keytone_base_path;
+    } else {
+        keyboard_inst.keytone_base = NULL;
+    }
+
     keyboard_inst.macro =
         pgs_widgets_macro_create(ui_container, params->base, keyboard_params_state_get(params, PGS_WIDGETS_TYPE_MACRO),
                                  keyboard_params_state_get(params, PGS_WIDGETS_TYPE_MACRO1),
@@ -324,6 +344,36 @@ static void pgs_app_keyboard_hidraw_monitor_recv(void)
     } key;
 
     if(sizeof(key) == chry_ringbuffer_read(&hidraw_rxrb, &key, sizeof(key))) {
+        if(key.pressed) {
+            if(keyboard_inst.keytone_enable && keyboard_inst.keytone_base) {
+                const char *tone_file = NULL;
+                switch(key.keycode) {
+                    case 89: tone_file = "1.wav"; break;
+                    case 90: tone_file = "2.wav"; break;
+                    case 91: tone_file = "3.wav"; break;
+                    case 92: tone_file = "4.wav"; break;
+                    case 93: tone_file = "5.wav"; break;
+                    case 94: tone_file = "6.wav"; break;
+                    case 95: tone_file = "7.wav"; break;
+                    case 96: tone_file = "8.wav"; break;
+                    case 97: tone_file = "9.wav"; break;
+                    case 87: tone_file = "+.wav"; break;
+                    case 86: tone_file = "-.wav"; break;
+                    case 85: tone_file = "x.wav"; break;
+                    case 84: tone_file = "\xC3\xB7.wav"; break;
+                    case 88: tone_file = "=.wav"; break;
+                }
+                if(tone_file) {
+                    char cmd[512];
+                    snprintf(cmd, sizeof(cmd), "aplay -q %s/%s &", keyboard_inst.keytone_base, tone_file);
+                    system(cmd);
+                }
+            }
+            if(keyboard_inst.keybeep_enable) {
+                audio_player_keybeep(keyboard_inst.keybeep_mode, keyboard_inst.keybeep_path);
+            }
+        }
+
         if(keyboard_inst.keyroll && keyboard_inst.keyroll->_keyroll->enable) {
             if(key.pressed) {
                 pgs_widgets_keyroll_push(
